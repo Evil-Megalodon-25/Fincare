@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fincare - Notifications</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: linear-gradient(180deg, #a0d8ef 0%, #004e7a 100%);
+    color: white;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .bubbles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  .bubble {
+    position: absolute;
+    bottom: -50px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    animation: rise 10s infinite ease-in;
+    opacity: 0.5;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.4));
+  }
+
+  .bubble.small { width: 12px; height: 12px; animation-duration: 7s; }
+  .bubble.medium { width: 20px; height: 20px; animation-duration: 10s; }
+  .bubble.large { width: 35px; height: 35px; animation-duration: 15s; }
+
+  @keyframes rise {
+    0% { transform: translateY(0) translateX(0); opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { transform: translateY(-110vh) translateX(25px); opacity: 0; }
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 119, 182, 0.85);
+    padding: 10px 20px;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    color: white;
+  }
+
+  .logo {
+    font-weight: bold;
+    font-size: 24px;
+    letter-spacing: 2px;
+    user-select: none;
+    cursor: default;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  .hamburger {
+    cursor: pointer;
+    width: 30px;
+    height: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease;
+    user-select: none;
+    position: relative;
+    z-index: 12;
+  }
+
+  .bar {
+    height: 4px;
+    background-color: white;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  .hamburger.active .bar:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .hamburger.active .bar:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.active .bar:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+
+  .menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    width: 200px;
+    z-index: 11;
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.8);
+    transform-origin: top right;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    color: #0077b6;
+    font-weight: 600;
+  }
+
+  .menu.show {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .menu a {
+    display: block;
+    padding: 14px 20px;
+    text-decoration: none;
+    color: #0077b6;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.2s ease;
+  }
+
+  .menu a:last-child {
+    border-bottom: none;
+  }
+
+  .menu a:hover {
+    background: #cce7f7;
+    color: #004e7a;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 30px auto 60px auto;
+    padding: 0 20px;
+    color: #004e7a;
+    position: relative;
+    z-index: 10;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 700;
+    color: #0077b6;
+  }
+
+  .notification-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 540px;
+    overflow-y: auto;
+  }
+
+  .notification-item {
+    background: #e1ecf7;
+    border-radius: 15px;
+    padding: 18px 25px;
+    margin-bottom: 16px;
+    box-shadow: 0 5px 20px rgba(0,94,122,0.4);
+    color: #004e7a;
+    font-size: 18px;
+    font-weight: 600;
+    user-select: none;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .notification-item:hover {
+    box-shadow: 0 10px 30px rgba(0,94,122,0.7);
+  }
+
+  .notif-date {
+    font-size: 14px;
+    font-weight: 400;
+    color: #004e7a;
+    opacity: 0.6;
+    margin-top: 4px;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="bubbles" aria-hidden="true">
+  <div class="bubble small" style="left: 10%; animation-delay: 0s;"></div>
+  <div class="bubble medium" style="left: 25%; animation-delay: 3s;"></div>
+  <div class="bubble large" style="left: 40%; animation-delay: 5s;"></div>
+  <div class="bubble small" style="left: 60%; animation-delay: 1.5s;"></div>
+  <div class="bubble medium" style="left: 75%; animation-delay: 2.5s;"></div>
+  <div class="bubble large" style="left: 85%; animation-delay: 4s;"></div>
+</div>
+
+<nav>
+  <a href="dashboard.html" class="logo" aria-label="Go to dashboard">
+    <img src="fincare.png" alt="Fincare Logo" style="height:40px; width:auto; vertical-align: middle;" />
+  </a>
+  <div class="hamburger" id="hamburger" aria-label="Toggle menu" role="button" tabindex="0" aria-expanded="false">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+  <div class="menu" id="menu" role="menu" aria-hidden="true">
+    <a href="dashboard.html" role="menuitem">Dashboard</a>
+    <a href="tanks.html" role="menuitem">Tanks</a>
+    <a href="fishes.html" role="menuitem">Fishes Info</a>
+    <a href="notifications.html" role="menuitem">Notification</a>
+    <a href="settings.html" role="menuitem">Settings</a>
+    <a href="support.html" role="menuitem">Support</a>
+  </div>
+</nav>
+
+<main>
+  <h1>Notifications</h1>
+  <ul class="notification-list" id="notification-list" role="list" aria-label="Notifications list">
+  </ul>
+</main>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const menu = document.getElementById('menu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+    hamburger.setAttribute('aria-expanded', !expanded);
+    menu.classList.toggle('show');
+    menu.setAttribute('aria-hidden', expanded);
+  });
+  hamburger.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      hamburger.click();
+    }
+  });
+
+  // Sample notifications data: newest first
+  const notifications = [
+    { date: '2025-09-19', message: 'Water quality low in Tank 1. Please clean it soon.' },
+    { date: '2025-09-18', message: 'New fish added to Tank 1: Neon Tetra.' },
+    { date: '2025-09-16', message: 'Tank 2 cleaning scheduled tomorrow.' },
+    { date: '2025-09-14', message: 'Fish feeding adjusted to new schedule.' },
+    { date: '2025-09-10', message: 'Alarm: High ammonia detected in Tank 1.' }
+  ];
+
+  const notificationList = document.getElementById('notification-list');
+
+  function renderNotifications() {
+    notificationList.innerHTML = '';
+    notifications.forEach(notif => {
+      const li = document.createElement('li');
+      li.className = 'notification-item';
+      li.tabIndex = 0;
+      li.innerHTML = `
+        ${notif.message}
+        <div class="notif-date">${notif.date}</div>
+      `;
+      notificationList.appendChild(li);
+    });
+  }
+
+  renderNotifications();
+
+// Theme sync on all pages
+function applyTheme(theme) {
+  if(theme === 'dark') {
+    document.body.style.background = '#012D3D';
+    document.body.style.color = '#BBD8E8';
+  } else {
+    document.body.style.background = 'linear-gradient(180deg, #a0d8ef 0%, #004e7a 100%)';
+    document.body.style.color = 'white';
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('fincare_theme') || 'light';
+  applyTheme(savedTheme);
+});
+</script>
+</body>
+</html>

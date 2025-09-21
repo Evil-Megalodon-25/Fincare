@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fincare - Settings</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: linear-gradient(180deg, #a0d8ef 0%, #004e7a 100%);
+  color: white;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.bubbles {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.bubble {
+  position: absolute;
+  bottom: -50px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50%;
+  animation: rise 10s infinite ease-in;
+  opacity: 0.5;
+  filter: drop-shadow(0 0 5px rgba(255,255,255,0.4));
+}
+
+.bubble.small { width: 12px; height: 12px; animation-duration: 7s; }
+.bubble.medium { width: 20px; height: 20px; animation-duration: 10s; }
+.bubble.large { width: 35px; height: 35px; animation-duration: 15s; }
+
+@keyframes rise {
+  0% { transform: translateY(0) translateX(0); opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(-110vh) translateX(25px); opacity: 0; }
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0,119,182,0.85);
+  color: white;
+  padding: 10px 20px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  box-sizing: border-box;
+  height: 60px;
+}
+
+nav a.logo {
+  color: white;
+  font-weight: bold;
+  font-size: 24px;
+  letter-spacing: 2px;
+  user-select: none;
+  text-decoration: none;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+}
+
+.hamburger {
+  cursor: pointer;
+  width: 36px;
+  height: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  user-select: none;
+  margin-left: auto;
+}
+
+.bar {
+  height: 4px;
+  background-color: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.hamburger.active .bar:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active .bar:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+.menu {
+  display: none;
+  position: fixed;
+  top: 60px;
+  right: 15px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  width: 200px;
+  z-index: 22;
+  padding: 10px 0;
+}
+
+.menu.show {
+  display: block;
+}
+
+.menu a {
+  display: block;
+  padding: 12px 20px;
+  color: #007bbf;
+  text-decoration: none;
+  font-weight: 600;
+  user-select: none;
+}
+
+.menu a:hover, .menu a:focus {
+  background: #ccebf9;
+  color: #004e7a;
+  outline: none;
+}
+
+main {
+  max-width: 700px;
+  margin: 100px auto 60px auto;
+  background: rgba(255,255,255,0.95);
+  border-radius: 20px;
+  padding: 24px 40px;
+  color: #004e7a;
+  box-shadow: 0 10px 30px rgba(0,94,122,0.25);
+  overflow-y: auto;
+  height: calc(100vh - 140px);
+  box-sizing: border-box;
+}
+
+h1 {
+  text-align: center;
+  font-weight: 700;
+  margin: 0 0 28px 0;
+  color: #007bbf;
+}
+
+.section {
+  margin-bottom: 32px;
+}
+
+.user-name {
+  font-size: 20px;
+  font-weight: 700;
+  padding: 14px;
+  background: #d7e9f9;
+  border-radius: 12px;
+  color: #004e7a;
+  text-align: center;
+  user-select: none;
+  margin-bottom: 24px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+input[type=password] {
+  width: 100%;
+  padding: 14px 12px;
+  margin-bottom: 16px;
+  border: 2px solid #007bbf;
+  border-radius: 10px;
+  font-size: 16px;
+  color: #004e7a;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+input[type=password]:focus {
+  border-color: #005f87;
+  box-shadow: 0 0 14px #007bbf;
+  outline: none;
+}
+
+/* Toggle switch styles */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 30px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  border-radius: 34px;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #007bbf;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  background-color: #007bbf;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease;
+  margin-bottom: 12px;
+}
+
+button:hover {
+  background-color: #005f87;
+}
+
+#logout-btn {
+  background-color: #bf1f1f;
+}
+
+#logout-btn:hover {
+  background-color: #8c1414;
+}
+
+  </style>
+</head>
+<body>
+  <div class="bubbles" aria-hidden="true">
+    <div class="bubble small" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="bubble medium" style="left: 25%; animation-delay: 3s;"></div>
+    <div class="bubble large" style="left: 40%; animation-delay: 5s;"></div>
+    <div class="bubble small" style="left: 60%; animation-delay: 1.5s;"></div>
+    <div class="bubble medium" style="left: 75%; animation-delay: 2.8s;"></div>
+    <div class="bubble large" style="left: 85%; animation-delay: 4.3s;"></div>
+  </div>
+  <nav>
+    <a href="dashboard.html" class="logo" aria-label="Go to dashboard">
+    <img src="fincare.png" alt="Fincare Logo" style="height:40px; width:auto; vertical-align: middle;" />
+  </a>
+    <div class="hamburger" id="hamburger" tabindex="0" role="button" aria-label="Toggle menu" aria-expanded="false">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <div class="menu" id="menu" role="menu" aria-hidden="true">
+      <a href="dashboard.html" role="menuitem" tabindex="0">Dashboard</a>
+      <a href="tanks.html" role="menuitem" tabindex="0">Tanks</a>
+      <a href="fishes.html" role="menuitem" tabindex="0">Fishes Info</a>
+      <a href="settings.html" role="menuitem" tabindex="0">Settings</a>
+      <a href="notifications.html" role="menuitem" tabindex="0">Notification</a>
+      <a href="support.html" role="menuitem" tabindex="0">Support</a>
+    </div>
+  </nav>
+  <main role="main" tabindex="0">
+    <h1>Settings</h1>
+    <section aria-label="User info" class="section">
+      <h2>User</h2>
+      <div id="user-name" class="user-name" tabindex="0">Carles Puyol</div>
+    </section>
+    <section aria-label="Change Password" class="section">
+      <h2>Change Password</h2>
+      <label for="current-password">Current Password</label>
+      <input id="current-password" type="password" autocomplete="current-password" />
+      <label for="new-password">New Password</label>
+      <input id="new-password" type="password" autocomplete="new-password" />
+      <label for="confirm-password">Confirm New Password</label>
+      <input id="confirm-password" type="password" autocomplete="new-password" />
+      <button id="change-password-btn" type="button">Change Password</button>
+    </section>
+    <section aria-label="Notifications" class="section">
+      <h2>Notifications</h2>
+      <label for="notify-toggle">Enable Notifications</label>
+      <label class="toggle-switch">
+        <input id="notify-toggle" type="checkbox" />
+        <span class="slider"></span>
+      </label>
+    </section>
+    <section aria-label="Theme" class="section">
+      <h2>Theme</h2>
+      <label for="theme-select">Select Theme</label>
+      <select id="theme-select">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </section>
+    <button id="logout-btn" type="button">Logout</button>
+  </main>
+  <script>
+    const hamburger = document.getElementById('hamburger'),
+          menu = document.getElementById('menu'),
+          userName = document.getElementById('user-name'),
+          notifyToggle = document.getElementById('notify-toggle'),
+          themeSelect = document.getElementById('theme-select'),
+          changePasswordBtn = document.getElementById('change-password-btn'),
+          logoutBtn = document.getElementById('logout-btn'),
+          currentPassword = document.getElementById('current-password'),
+          newPassword = document.getElementById('new-password'),
+          confirmPassword = document.getElementById('confirm-password');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+      hamburger.setAttribute('aria-expanded', !expanded);
+      menu.classList.toggle('show');
+      menu.setAttribute('aria-hidden', expanded);
+    });
+
+    hamburger.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        hamburger.click();
+      }
+    });
+
+    notifyToggle.addEventListener('change', () => {
+      localStorage.setItem('fincare_notify', notifyToggle.checked);
+    });
+
+    themeSelect.addEventListener('change', () => {
+      localStorage.setItem('fincare_theme', themeSelect.value);
+      applyTheme(themeSelect.value);
+    });
+
+    changePasswordBtn.addEventListener('click', () => {
+      const currentPassValue = currentPassword.value,
+            newPassValue = newPassword.value,
+            confirmPassValue = confirmPassword.value;
+
+      if(!currentPassValue || !newPassValue || !confirmPassValue) {
+        alert('Please fill all password fields.');
+        return;
+      }
+      if(newPassValue !== confirmPassValue) {
+        alert('New password and confirmation do not match.');
+        return;
+      }
+      alert('Password changed successfully!');
+      currentPassword.value = '';
+      newPassword.value = '';
+      confirmPassword.value = '';
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    });
+
+    function applyTheme(theme) {
+      if(theme === 'dark') {
+        document.body.style.background = '#012d39';
+        document.body.style.color = '#b2d4e6';
+      } else {
+        document.body.style.background = 'linear-gradient(180deg, #a0d8ef, #004e7a)';
+        document.body.style.color = 'white';
+      }
+    }
+
+    function loadSettings() {
+      const storedName = localStorage.getItem('fincare_username');
+      userName.textContent = storedName? storedName : 'John Doe';
+
+      const storedNotify = localStorage.getItem('fincare_notify');
+      notifyToggle.checked = storedNotify === 'true';
+
+      const storedTheme = localStorage.getItem('fincare_theme') || 'light';
+      themeSelect.value = storedTheme;
+      applyTheme(storedTheme);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadSettings);
+  </script>
+</body>
+</html>

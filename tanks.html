@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fincare - Tanks</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    color: white;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    background: linear-gradient(180deg, #a0d8ef 0%, #004e7a 100%);
+  }
+  .bubbles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .bubble {
+    position: absolute;
+    bottom: -50px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    animation: rise 10s infinite ease-in;
+    opacity: 0.5;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.4));
+  }
+  .bubble.small { width: 12px; height: 12px; animation-duration: 7s; }
+  .bubble.medium { width: 20px; height: 20px; animation-duration: 10s; }
+  .bubble.large { width: 35px; height: 35px; animation-duration: 15s; }
+  @keyframes rise {
+    0% { transform: translateY(0) translateX(0); opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { transform: translateY(-110vh) translateX(25px); opacity: 0; }
+  }
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 119, 182, 0.85);
+    padding: 10px 20px;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    color: white;
+  }
+  .logo {
+    font-weight: bold;
+    font-size: 24px;
+    letter-spacing: 2px;
+    user-select: none;
+    cursor: default;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+  }
+  .hamburger {
+    cursor: pointer;
+    width: 30px;
+    height: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease;
+    user-select: none;
+    position: relative;
+    z-index: 12;
+  }
+  .bar {
+    height: 4px;
+    background-color: white;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+  .hamburger.active .bar:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  .hamburger.active .bar:nth-child(2) {
+    opacity: 0;
+  }
+  .hamburger.active .bar:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+  .menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    width: 200px;
+    z-index: 11;
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.8);
+    transform-origin: top right;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    color: #0077b6;
+    font-weight: 600;
+  }
+  .menu.show {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+  }
+  .menu a {
+    display: block;
+    padding: 14px 20px;
+    text-decoration: none;
+    color: #0077b6;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.2s ease;
+  }
+  .menu a:last-child {
+    border-bottom: none;
+  }
+  .menu a:hover {
+    background: #cce7f7;
+    color: #004e7a;
+  }
+  main {
+    max-width: 900px;
+    margin: 30px auto 60px auto;
+    padding: 0 15px;
+    color: #004e7a;
+    position: relative;
+    z-index: 10;
+  }
+  #add-tank-btn {
+    display: block;
+    margin: 25px auto 40px;
+    background-color: #0077b6;
+    color: white;
+    border: none;
+    padding: 20px 40px;
+    font-size: 24px;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0,119,182,0.6);
+    transition: background-color 0.3s ease, transform 0.15s ease;
+    user-select: none;
+    width: max-content;
+  }
+  #add-tank-btn:hover {
+    background-color: #005f87;
+    transform: scale(1.05);
+  }
+  #add-tank-btn:active {
+    transform: scale(0.95);
+  }
+  .tank-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .tank-item {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease;
+    overflow: hidden;
+  }
+  .tank-item:hover {
+    background-color: #d7e9f9;
+  }
+  .tank-header {
+    padding: 18px 25px;
+    font-weight: 700;
+    font-size: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #004e7a;
+    user-select: none;
+  }
+  .tank-toggle-icon {
+    font-size: 26px;
+    user-select: none;
+    transition: transform 0.3s ease;
+  }
+  .tank-toggle-icon.open {
+    transform: rotate(180deg);
+  }
+  .remove-tank-btn {
+    background: #bf1a2f;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    user-select: none;
+    margin-left: 10px;
+    outline: none;
+  }
+  .remove-tank-btn:hover {
+    background-color: #900e13;
+  }
+  .tank-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, padding 0.3s ease;
+    background: #ccdef7;
+    padding: 0 25px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+  .tank-content.open {
+    padding: 20px 25px 25px;
+    max-height: 1000px;
+  }
+  .fish-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 30px;
+    justify-content: center;
+  }
+  .fish-item {
+    background: #7bb8ea;
+    border-radius: 12px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0,94,122,0.6);
+    cursor: pointer;
+    user-select: none;
+    color: white;
+    font-weight: 600;
+    position: relative;
+    min-width: 140px;
+  }
+  .fish-item img {
+    width: 45px;
+    height: 35px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: inset 0 -3px 6px rgba(0, 44, 73, 0.8);
+    flex-shrink: 0;
+  }
+  .fish-item .fish-name {
+    flex-grow: 1;
+  }
+  .fish-item .remove-btn {
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 8px;
+    color: #6a0b0b;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 3px 8px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
+  .fish-item .remove-btn:hover {
+    background-color: #bf1a2f;
+    color: white;
+  }
+  .add-fish-form {
+    max-width: 450px;
+    margin: 0 auto 20px auto;
+    background: #e1ecf7;
+    border-radius: 15px;
+    padding: 20px 25px;
+    box-shadow: 0 4px 16px rgba(0,94,122,0.5);
+    color: #004e7a;
+    user-select: none;
+  }
+  .add-fish-form h3 {
+    margin-top: 0;
+    margin-bottom: 14px;
+    font-weight: 700;
+    font-size: 22px;
+    text-align: center;
+  }
+  .search-input-container {
+    position: relative;
+  }
+  .fish-search-input {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: 2px solid #0077b6;
+    color: #004e7a;
+    box-sizing: border-box;
+  }
+  .fish-search-input:focus {
+    outline: none;
+    border-color: #005f87;
+    box-shadow: 0 0 14px #0077b6;
+  }
+  .suggestions-list {
+    position: absolute;
+    width: 100%;
+    background: white;
+    max-height: 140px;
+    overflow-y: auto;
+    border-radius: 0 0 8px 8px;
+    border: 2px solid #0077b6;
+    z-index: 20;
+    color: #004e7a;
+  }
+  .suggestions-list li {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+    user-select: none;
+    font-size: 18px;
+  }
+  .suggestions-list li:last-child {
+    border-bottom: none;
+  }
+  .suggestions-list li:hover {
+    background: #cce7f7;
+    color: #004e7a;
+  }
+  .add-button {
+    width: 100%;
+    padding: 18px;
+    background-color: #0077b6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 12px;
+    user-select: none;
+    transition: background-color 0.3s ease, transform 0.15s ease;
+  }
+  .add-button:hover {
+    background-color: #005f87;
+    transform: scale(1.05);
+  }
+  .add-button:active {
+    transform: scale(0.95);
+  }
+  .feeding-cleaning {
+    background: #e1ecf7;
+    border-radius: 15px;
+    padding: 15px 25px;
+    box-shadow: 0 5px 15px rgba(0,94,122,0.5);
+    color: #004e7a;
+    font-weight: 600;
+    font-size: 18px;
+    max-width: 400px;
+    margin: 0 auto 40px auto;
+    user-select: none;
+    text-align: center;
+    transition: background-color 0.3s ease;
+  }
+  /* Tank animation block included in tank content */
+  .dashboard-tank-scene {
+    position: relative;
+    width: 420px;
+    height: 320px;
+    margin: 0 auto 20px;
+    border-radius: 23px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.27);
+    background: #cdefff;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .tank-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 23px;
+    z-index: 1;
+    position: absolute;
+    left: 0; top: 0;
+  }
+  .fish-png {
+    width: 80px;
+    height: auto;
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    transition: filter 0.35s;
+  }
+  .fish-png:hover {
+    filter: brightness(1.16);
+  }
+     .fish1 {
+      top: 54%; left: 5%;
+      animation: fish1-swim 8s linear infinite;
+    }
+    .fish2 {
+      top: 74%; left: 85%;
+      animation: fish2-swim 11s linear infinite;
+    }
+    .fish3 {
+      top: 20%; left: 18%;
+      transform: scaleX(1);
+      animation: fish3-swim 10s linear infinite;
+    }
+    @keyframes fish1-swim {
+  0% {
+    left: 5%;
+    transform: scaleX(1);
+  }
+  50% {
+    left: 60%;
+    transform: scaleX(1);
+  }
+  51% {
+    transform: scaleX(-1);
+  }
+  100% {
+    left: 5%;
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes fish2-swim {
+  0% {
+    left: 85%;
+    transform: scaleX(1);
+  }
+  50% {
+    left: 8%;
+    transform: scaleX(1);
+  }
+  51% {
+    transform: scaleX(-1);
+  }
+  100% {
+    left: 85%;
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes fish3-swim {
+  0% {
+    left: 18%;
+    transform: scaleX(1);
+  }
+  30% {
+    left: 60%;
+    transform: scaleX(1);
+  }
+  55% {
+    left: 50%;
+    transform: scaleX(1);
+  }
+  56% {
+    transform: scaleX(-1);
+  }
+  80% {
+    left: 10%;
+    transform: scaleX(-1);
+  }
+  100% {
+    left: 18%;
+    transform: scaleX(-1);
+  }
+}
+</style>
+</head>
+<body>
+<div class="bubbles" aria-hidden="true">
+  <div class="bubble small" style="left: 10%; animation-delay: 0s;"></div>
+  <div class="bubble medium" style="left: 25%; animation-delay: 3s;"></div>
+  <div class="bubble large" style="left: 40%; animation-delay: 5s;"></div>
+  <div class="bubble small" style="left: 60%; animation-delay: 1.5s;"></div>
+  <div class="bubble medium" style="left: 75%; animation-delay: 2.5s;"></div>
+  <div class="bubble large" style="left: 85%; animation-delay: 4s;"></div>
+</div>
+<nav>
+  <a href="dashboard.html" class="logo" aria-label="Go to dashboard">
+    <img src="fincare.png" alt="Fincare Logo" style="height:40px; width:auto; vertical-align: middle;" />
+  </a>
+  <div class="hamburger" id="hamburger" aria-label="Toggle menu" role="button" tabindex="0" aria-expanded="false">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+  <div class="menu" id="menu" role="menu" aria-hidden="true">
+    <a href="dashboard.html" role="menuitem">Dashboard</a>
+    <a href="tanks.html" role="menuitem">Tanks</a>
+    <a href="fishes.html" role="menuitem">Fishes Info</a>
+    <a href="notifications.html" role="menuitem">Notification</a>
+    <a href="settings.html" role="menuitem">Settings</a>
+    <a href="support.html" role="menuitem">Support</a>
+  </div>
+</nav>
+<main>
+  <button id="add-tank-btn" aria-label="Add new tank">+ Add Tank</button>
+  <ul class="tank-list" id="tank-list" aria-live="polite" aria-relevant="additions removals">
+  </ul>
+</main>
+<script>
+const hamburger = document.getElementById('hamburger');
+const menu = document.getElementById('menu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+  hamburger.setAttribute('aria-expanded', !expanded);
+  menu.classList.toggle('show');
+  menu.setAttribute('aria-hidden', expanded);
+});
+hamburger.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    hamburger.click();
+  }
+});
+const fishData = [
+  { name: "Goldfish", img: "fish1.jpg" },
+  { name: "Betta Fish", img: "fish2.jpg" },
+  { name: "Guppy", img: "fish3.jpg" },
+  { name: "Neon Tetra", img: "fish4.jpg" },
+  { name: "Angelfish", img: "fish5.jpg" },
+  { name: "Molly", img: "fish6.jpg" },
+  { name: "Swordtail", img: "fish7.jpg" }
+];
+let tanks = [];
+const tankList = document.getElementById('tank-list');
+const addTankBtn = document.getElementById('add-tank-btn');
+const savedTanks = localStorage.getItem('fincareTanks');
+if(savedTanks) {
+  tanks = JSON.parse(savedTanks);
+} else {
+  tanks = [{
+    id: 1,
+    fishes: [],
+    lastCleanedDate: new Date().toISOString()
+  }];
+  saveTanks();
+}
+function renderTanks() {
+  tankList.innerHTML = '';
+  tanks.forEach((tank) => {
+    const tankItem = document.createElement('li');
+    tankItem.className = 'tank-item';
+    tankItem.setAttribute('tabindex', '0');
+    tankItem.setAttribute('aria-expanded', 'false');
+    tankItem.setAttribute('role', 'button');
+    tankItem.setAttribute('aria-label', `Toggle Tank ${tank.id} details`);
+    tankItem.dataset.tankId = tank.id;
+    const tankHeader = document.createElement('div');
+    tankHeader.className = 'tank-header';
+    const title = document.createElement('span');
+    title.textContent = `Tank ${tank.id}`;
+    tankHeader.appendChild(title);
+    const controlsWrapper = document.createElement('div');
+    controlsWrapper.style.display = 'flex';
+    controlsWrapper.style.alignItems = 'center';
+    const toggleIcon = document.createElement('span');
+    toggleIcon.className = 'tank-toggle-icon';
+    toggleIcon.textContent = '▼';
+    toggleIcon.style.userSelect = 'none';
+    toggleIcon.style.marginRight = '8px';
+    controlsWrapper.appendChild(toggleIcon);
+    const removeTankBtn = document.createElement('button');
+    removeTankBtn.textContent = 'Remove Tank';
+    removeTankBtn.setAttribute('aria-label', `Remove Tank ${tank.id}`);
+    removeTankBtn.className = 'remove-tank-btn';
+    removeTankBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (confirm(`Are you sure you want to remove Tank ${tank.id}? This action cannot be undone.`)) {
+        removeTank(tank.id);
+      }
+    });
+    controlsWrapper.appendChild(removeTankBtn);
+    tankHeader.appendChild(controlsWrapper);
+    tankItem.appendChild(tankHeader);
+    const tankContent = document.createElement('div');
+    tankContent.className = 'tank-content';
+    // Tank animated fish background scene integration here
+    const tankAnimDiv = document.createElement('div');
+    tankAnimDiv.className = 'dashboard-tank-scene';
+    tankAnimDiv.innerHTML = `
+      <img src="pngwing.com (30).png" alt="Fish tank" class="tank-bg" />
+      <img src="pngwing.com (32).png" alt="Fish 1" class="fish-png fish1" />
+      <img src="pngwing.com (33).png" alt="Fish 2" class="fish-png fish2" />
+      <img src="pngwing.com (31).png" alt="Fish 3" class="fish-png fish3" />
+    `;
+    tankContent.appendChild(tankAnimDiv);
+    const fishList = document.createElement('div');
+    fishList.className = 'fish-list';
+    tank.fishes.forEach((fish, idx) => {
+      addFishItem(fishList, idx, fish, tank.id);
+    });
+    tankContent.appendChild(fishList);
+    const addFishForm = document.createElement('section');
+    addFishForm.className = 'add-fish-form';
+    addFishForm.innerHTML = `
+      <h3>Add a Fish</h3>
+      <div class="search-input-container">
+        <input type="text" placeholder="Search fish by name..." class="fish-search-input" aria-label="Search fish by name" autocomplete="off" />
+        <ul class="suggestions-list" hidden></ul>
+      </div>
+      <button class="add-button" disabled>Add Fish</button>
+    `;
+    tankContent.appendChild(addFishForm);
+    const feedingCleaning = document.createElement('div');
+    feedingCleaning.className = 'feeding-cleaning';
+    feedingCleaning.innerHTML = `
+      <p><strong>Feeding:</strong> 0 grams of food twice daily.</p>
+      <p><strong>Cleaning:</strong> <span class="cleaning-countdown">Loading...</span></p>
+    `;
+    tankContent.appendChild(feedingCleaning);
+    tankItem.appendChild(tankContent);
+    tankList.appendChild(tankItem);
+    tankHeader.addEventListener('click', () => {
+      const isOpen = tankContent.classList.toggle('open');
+      tankItem.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      toggleIcon.classList.toggle('open', isOpen);
+      if(isOpen) {
+        updateCleaningCountdown(tank.lastCleanedDate, feedingCleaning.querySelector('.cleaning-countdown'));
+        updateFeedingAmount(tank.fishes.length, feedingCleaning);
+      }
+    });
+    tankItem.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        tankHeader.click();
+      }
+    });
+    setupFishSearch(tank, addFishForm, fishList);
+  });
+}
+function setupFishSearch(tank, formElem, fishList) {
+  const searchInput = formElem.querySelector('.fish-search-input');
+  const suggestionsList = formElem.querySelector('.suggestions-list');
+  const addBtn = formElem.querySelector('.add-button');
+  let selected = null;
+  searchInput.addEventListener('input', () => {
+    const val = searchInput.value.toLowerCase().trim();
+    if(val.length === 0) {
+      suggestionsList.hidden = true;
+      selected = null;
+      addBtn.disabled = true;
+      return;
+    }
+    const matched = fishData.filter(f =>
+      f.name.toLowerCase().includes(val)
+    );
+    if(matched.length === 0) {
+      suggestionsList.hidden = true;
+      selected = null;
+      addBtn.disabled = true;
+      return;
+    }
+    suggestionsList.innerHTML = '';
+    matched.forEach(f => {
+      const li = document.createElement('li');
+      li.textContent = f.name;
+      li.tabIndex = 0;
+      li.addEventListener('click', () => selectFish(f));
+      li.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter') selectFish(f);
+      });
+      suggestionsList.appendChild(li);
+    });
+    suggestionsList.hidden = false;
+  });
+  function selectFish(fish) {
+    selected = fish;
+    addBtn.disabled = false;
+    suggestionsList.hidden = true;
+    searchInput.value = fish.name;
+    searchInput.focus();
+  }
+  addBtn.addEventListener('click', () => {
+    if(!selected) return;
+    tank.fishes.push(selected);
+    addFishItem(fishList, tank.fishes.length - 1, selected, tank.id);
+    saveTanks();
+    // Immediate update of feeding info
+    const tankItem = [...document.querySelectorAll('.tank-item')].find(ti => parseInt(ti.dataset.tankId) === tank.id);
+    if(tankItem) {
+      const feedingCleaningElement = tankItem.querySelector('.feeding-cleaning');
+      if(feedingCleaningElement) {
+        updateFeedingAmount(tank.fishes.length, feedingCleaningElement);
+      }
+    }
+    selected = null;
+    addBtn.disabled = true;
+    searchInput.value = '';
+  });
+}
+function addFishItem(fishList, index, fish, tankId) {
+  const fishItem = document.createElement('div');
+  fishItem.className = 'fish-item';
+  const img = document.createElement('img');
+  img.src = fish.img;
+  img.alt = fish.name;
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'fish-name';
+  nameSpan.textContent = fish.name;
+  fishItem.style.cursor = 'pointer';
+  fishItem.addEventListener('click', () => {
+    const encodedName = encodeURIComponent(fish.name.toLowerCase().replace(/\s+/g, ''));
+    window.location.href = `fishes.html?fish=${encodedName}`;
+  });
+  fishItem.tabIndex = 0;
+  fishItem.addEventListener('keydown', e => {
+    if(e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      const encodedName = encodeURIComponent(fish.name.toLowerCase().replace(/\s+/g, ''));
+      window.location.href = `fishes.html?fish=${encodedName}`;
+    }
+  });
+  const removeBtn = document.createElement('button');
+  removeBtn.className = 'remove-btn';
+  removeBtn.textContent = 'Remove';
+  removeBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    removeFishFromTank(tankId, index);
+  });
+  fishItem.appendChild(img);
+  fishItem.appendChild(nameSpan);
+  fishItem.appendChild(removeBtn);
+  fishList.appendChild(fishItem);
+}
+function removeFishFromTank(tankId, fishIndex) {
+  const tank = tanks.find(t => t.id === tankId);
+  if (!tank) return;
+  tank.fishes.splice(fishIndex, 1);
+  saveTanks();
+  const openTankItem = [...document.querySelectorAll('.tank-item')].find(ti => parseInt(ti.dataset.tankId) === tankId);
+  const wasOpen = openTankItem.querySelector('.tank-content').classList.contains('open');
+  renderTanks();
+  if (wasOpen) {
+    const newTankItem = [...document.querySelectorAll('.tank-item')].find(ti => parseInt(ti.dataset.tankId) === tankId);
+    const newTankContent = newTankItem.querySelector('.tank-content');
+    const newToggleIcon = newTankItem.querySelector('.tank-toggle-icon');
+    newTankContent.classList.add('open');
+    newTankItem.setAttribute('aria-expanded', 'true');
+    newToggleIcon.classList.add('open');
+    const feedingCleaning = newTankContent.querySelector('.feeding-cleaning');
+    updateCleaningCountdown(tank.lastCleanedDate, feedingCleaning.querySelector('.cleaning-countdown'));
+    updateFeedingAmount(tank.fishes.length, feedingCleaning);
+  }
+}
+function removeTank(tankId) {
+  tanks = tanks.filter(t => t.id !== tankId);
+  saveTanks();
+  renderTanks();
+}
+function saveTanks() {
+  localStorage.setItem('fincareTanks', JSON.stringify(tanks));
+}
+function updateCleaningCountdown(lastCleanedDateStr, element) {
+  const cleaningCycleDays = 7;
+  const lastCleanedDate = new Date(lastCleanedDateStr);
+  const today = new Date();
+  const diffTime = today - lastCleanedDate;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const daysLeft = Math.max(cleaningCycleDays - diffDays, 0);
+  if(daysLeft === 0) {
+    element.textContent = "Cleaning due today! Please clean the tank.";
+  } else {
+    element.textContent = daysLeft + " day" + (daysLeft > 1 ? "s" : "") + " left to clean the tank";
+  }
+}
+function updateFeedingAmount(fishCount, feedingContainer) {
+  const foodPerFish = 5;
+  const totalFood = fishCount * foodPerFish;
+  feedingContainer.querySelector('p:first-child').textContent = `Feeding: ${totalFood} grams of food twice daily.`;
+}
+addTankBtn.addEventListener('click', () => {
+  if(confirm('Are you sure you want to add a new tank?')) {
+    const newId = tanks.length > 0 ? Math.max(...tanks.map(t => t.id)) + 1 : 1;
+    const newTank = {
+      id: newId,
+      fishes: [],
+      lastCleanedDate: new Date().toISOString()
+    };
+    tanks.push(newTank);
+    saveTanks();
+    renderTanks();
+  }
+});
+renderTanks();
+// Theme sync on all pages
+function applyTheme(theme) {
+  if(theme === 'dark') {
+    document.body.style.background = '#012D3D';
+    document.body.style.color = '#BBD8E8';
+  } else {
+    document.body.style.background = 'linear-gradient(180deg, #a0d8ef 0%, #004e7a 100%)';
+    document.body.style.color = 'white';
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('fincare_theme') || 'light';
+  applyTheme(savedTheme);
+});
+</script>
+</body>
+</html>

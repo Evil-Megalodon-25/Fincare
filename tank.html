@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fincare - Tanks</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(180deg, #a0d8ef 0%, #004e7a 100%);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Navigation bar */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 119, 182, 0.85);
+      padding: 10px 20px;
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+      color: white;
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 24px;
+      letter-spacing: 2px;
+      user-select: none;
+      cursor: default;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Hamburger menu */
+    .hamburger {
+      cursor: pointer;
+      width: 30px;
+      height: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.3s ease;
+      user-select: none;
+      position: relative;
+      z-index: 12;
+    }
+
+    .bar {
+      height: 4px;
+      background-color: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .hamburger.active .bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active .bar:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active .bar:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    /* Menu dropdown */
+    .menu {
+      display: none;
+      position: absolute;
+      top: 50px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      width: 200px;
+      z-index: 11;
+      overflow: hidden;
+      opacity: 0;
+      transform: scale(0.8);
+      transform-origin: top right;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      color: #0077b6;
+      font-weight: 600;
+    }
+
+    .menu.show {
+      display: block;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .menu a {
+      display: block;
+      padding: 14px 20px;
+      text-decoration: none;
+      color: #0077b6;
+      border-bottom: 1px solid #ddd;
+      transition: background-color 0.2s ease;
+    }
+
+    .menu a:last-child {
+      border-bottom: none;
+    }
+
+    .menu a:hover {
+      background: #cce7f7;
+      color: #004e7a;
+    }
+
+    /* Main content container */
+    main {
+      max-width: 900px;
+      margin: 30px auto 60px auto;
+      padding: 0 15px;
+    }
+
+    /* Tank section */
+    .tank {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      border-radius: 20px;
+      padding: 25px 20px;
+      color: #004e7a;
+      user-select: none;
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .tank:hover {
+      box-shadow: 0 14px 40px rgba(0,0,0,0.45);
+    }
+
+    .tank h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 700;
+      font-size: 28px;
+    }
+
+    /* Fish list */
+    .fish-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+
+    .fish-item {
+      background: #cce7f7;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,119,182,0.6);
+      width: 150px;
+      cursor: pointer;
+      color: #004e7a;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      user-select: none;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .fish-item:hover {
+      transform: scale(1.08);
+      box-shadow: 0 8px 25px rgba(0,119,182,0.9);
+    }
+
+    .fish-item img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      box-shadow: inset 0 -3px 6px rgba(0, 94, 122, 0.6);
+    }
+
+    .fish-item span {
+      font-weight: 600;
+      font-size: 16px;
+      padding: 10px 5px;
+      text-align: center;
+    }
+
+    /* Add fish form */
+    .add-fish-form {
+      max-width: 400px;
+      margin: 0 auto 40px auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 25px 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      color: #004e7a;
+      user-select: none;
+    }
+
+    .add-fish-form h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-weight: 700;
+      font-size: 22px;
+      text-align: center;
+    }
+
+    .add-fish-form input, .add-fish-form button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0 15px 0;
+      border-radius: 8px;
+      border: 1.5px solid #0077b6;
+      font-size: 16px;
+      font-weight: 500;
+      color: #004e7a;
+      box-sizing: border-box;
+    }
+
+    .add-fish-form input:focus {
+      outline: none;
+      border-color: #005f87;
+      box-shadow: 0 0 12px #0077b6;
+    }
+
+    .add-fish-form button {
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background-color 0.3s ease, transform 0.15s ease;
+    }
+
+    .add-fish-form button:hover {
+      background-color: #005f87;
+      transform: scale(1.05);
+    }
+
+    .add-fish-form button:active {
+      transform: scale(0.95);
+    }
+
+    /* Feeding & cleaning info */
+    .feeding-cleaning {
+      max-width: 450px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 20px 25px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      color: #004e7a;
+      user-select: none;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">Fincare</div>
+
+    <div class="hamburger" id="hamburger" aria-label="Toggle menu" role="button" tabindex="0" aria-expanded="false">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+
+    <div class="menu" id="menu" role="menu" aria-hidden="true">
+      <a href="tanks.html" role="menuitem">Tanks</a>
+      <a href="fishes.html" role="menuitem">Fishes Info</a>
+      <a href="settings.html" role="menuitem">Settings</a>
+      <a href="notifications.html" role="menuitem">Notification</a>
+      <a href="support.html" role="menuitem">Support</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="tank" aria-label="Tank 1 with fishes">
+      <h2>Tank 1</h2>
+      <div class="fish-list" id="fish-list">
+        <div class="fish-item" tabindex="0" onclick="goToFishInfo('goldfish')" onkeypress="if(event.key==='Enter'){goToFishInfo('goldfish')}">
+          <img src="fish1.jpg" alt="Goldfish" />
+          <span>Goldfish</span>
+        </div>
+        <div class="fish-item" tabindex="0" onclick="goToFishInfo('betta')" onkeypress="if(event.key==='Enter'){goToFishInfo('betta')}">
+          <img src="fish2.jpg" alt="Betta Fish" />
+          <span>Betta Fish</span>
+        </div>
+        <div class="fish-item" tabindex="0" onclick="goToFishInfo('guppy')" onkeypress="if(event.key==='Enter'){goToFishInfo('guppy')}">
+          <img src="fish3.jpg" alt="Guppy" />
+          <span>Guppy</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="add-fish-form" aria-label="Add new fish to tank">
+      <h3>Add a Fish</h3>
+      <input type="text" id="new-fish-name" placeholder="Fish Name" aria-label="New fish name" />
+      <input type="text" id="new-fish-img" placeholder="Image URL" aria-label="New fish image URL" />
+      <button onclick="addFish()">Add Fish</button>
+    </section>
+
+    <section class="feeding-cleaning" aria-label="Feeding and cleaning information">
+      <p><strong>Feeding:</strong> Feed 5 grams of food twice daily.</p>
+      <p><strong>Cleaning:</strong> Clean the tank every two weeks.</p>
+    </section>
+  </main>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const menu = document.getElementById('menu');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+      hamburger.setAttribute('aria-expanded', !expanded);
+      menu.classList.toggle('show');
+      menu.setAttribute('aria-hidden', expanded);
+    });
+
+    hamburger.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        hamburger.click();
+      }
+    });
+
+    function goToFishInfo(fishName) {
+      // Navigate to fish info page with query parameter to identify fish
+      window.location.href = `fishes.html?fish=${fishName}`;
+    }
+
+    function addFish() {
+      const fishName = document.getElementById('new-fish-name').value.trim();
+      const fishImgUrl = document.getElementById('new-fish-img').value.trim();
+      if(fishName === "" || fishImgUrl === "") {
+        alert("Please enter both fish name and image URL");
+        return;
+      }
+
+      const fishList = document.getElementById('fish-list');
+
+      // Create new fish item
+      const fishDiv = document.createElement('div');
+      fishDiv.classList.add('fish-item');
+      fishDiv.tabIndex = 0;
+      fishDiv.setAttribute('onclick', `goToFishInfo('${fishName.toLowerCase().replace(/\s/g,"")}')`);
+      fishDiv.setAttribute('onkeypress', `if(event.key==='Enter'){goToFishInfo('${fishName.toLowerCase().replace(/\s/g,"")}')}`);
+
+      const imgElem = document.createElement('img');
+      imgElem.src = fishImgUrl;
+      imgElem.alt = fishName;
+
+      const spanElem = document.createElement('span');
+      spanElem.textContent = fishName;
+
+      fishDiv.appendChild(imgElem);
+      fishDiv.appendChild(spanElem);
+
+      fishList.appendChild(fishDiv);
+
+      // Clear inputs
+      document.getElementById('new-fish-name').value = "";
+      document.getElementById('new-fish-img').value = "";
+    }
+  </script>
+
+</body>
+</html>

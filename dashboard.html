@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fincare - Dashboard</title>
+  <style>
+    /* Background with animated bubbles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(180deg, #a0d8ef 0%, #004e7a 100%);
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+      color: white;
+    }
+    .bubbles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .bubble {
+      position: absolute;
+      bottom: -50px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      animation: rise 10s infinite ease-in;
+      opacity: 0.6;
+      filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+    }
+    .bubble.small { width: 15px; height: 15px; animation-duration: 8s; }
+    .bubble.medium { width: 25px; height: 25px; animation-duration: 12s; }
+    .bubble.large { width: 40px; height: 40px; animation-duration: 15s; }
+    @keyframes rise {
+      0% { transform: translateY(0) translateX(0); opacity: 0.6; }
+      50% { opacity: 0.9; }
+      100% { transform: translateY(-110vh) translateX(30px); opacity: 0; }
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 119, 182, 0.85);
+      color: white;
+      padding: 10px 20px;
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+    }
+    .logo {
+      font-weight: bold;
+      font-size: 24px;
+      letter-spacing: 2px;
+      user-select: none;
+      cursor: default;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+    }
+    .hamburger {
+      cursor: pointer;
+      width: 30px;
+      height: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.3s ease;
+      user-select: none;
+      z-index: 12;
+      position: relative;
+    }
+    .bar {
+      height: 4px;
+      background-color: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .hamburger.active .bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .hamburger.active .bar:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.active .bar:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+    .menu {
+      display: none;
+      position: absolute;
+      top: 50px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 8px;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+      width: 200px;
+      z-index: 11;
+      overflow: hidden;
+      opacity: 0;
+      transform: scale(0.8);
+      transform-origin: top right;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .menu.show {
+      display: block;
+      opacity: 1;
+      transform: scale(1);
+    }
+    .menu a {
+      display: block;
+      padding: 14px 20px;
+      text-decoration: none;
+      color: #0077b6;
+      font-weight: 600;
+      border-bottom: 1px solid #ddd;
+      transition: background-color 0.2s ease;
+    }
+    .menu a:last-child {
+      border-bottom: none;
+    }
+    .menu a:hover {
+      background: #ccebf7;
+      color: #004e7a;
+    }
+    /* Slideshow container */
+    .slideshow {
+      margin: 20px auto;
+      max-width: 90%;
+      max-height: 300px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      position: relative;
+      background: white;
+      color: #004e7a;
+    }
+    .slide {
+      display: none;
+      padding: 20px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .slide.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .slide img {
+      max-width: 100%;
+      max-height: 150px;
+      border-radius: 15px;
+      object-fit: cover;
+      margin-bottom: 15px;
+      box-shadow: 0 0 10px rgba(0, 119, 182, 0.75);
+      filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+    }
+    /* Slide controls */
+    .slide-controls {
+      position: absolute;
+      width: 100%;
+      bottom: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      user-select: none;
+    }
+    .control-btn {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #ddd;
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(0,0,0,0.15);
+      transition: background-color 0.3s ease;
+    }
+    .control-btn.active {
+      background: #0077b6;
+      box-shadow: 0 0 16px #0077b6;
+    }
+    /* Notification block */
+    .notification-block {
+      background: rgba(255, 255, 255, 0.95);
+      max-width: 90%;
+      margin: 20px auto;
+      padding: 20px 25px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      color: #004e7a;
+      user-select: none;
+      transition: box-shadow 0.3s ease;
+    }
+    .notification-block:hover {
+      box-shadow: 0 8px 28px rgba(0,0,0,0.3);
+    }
+    .notification-header {
+      font-weight: bold;
+      margin-bottom: 15px;
+      font-size: 20px;
+      color: #0077b6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .notification-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 16px;
+    }
+    .notification-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid #ddd;
+      cursor: default;
+      transition: background-color 0.25s ease;
+    }
+    .notification-list li:last-child {
+      border-bottom: none;
+    }
+    .notification-list li:hover {
+      background-color: #cce7f7;
+    }
+    .see-all {
+      color: #005f87;
+      cursor: pointer;
+      font-weight: 700;
+      text-decoration: underline;
+      font-size: 15px;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+    .see-all:hover {
+      color: #0077b6;
+    }
+    /* Tank block with animated fishes */
+    .tank-block {
+      max-width: 520px;
+      margin: 30px auto 50px auto;
+      padding: 40px 10px 25px 10px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 700;
+      font-size: 22px;
+      color: #004e7a;
+    }
+    .dashboard-tank-scene {
+      position: relative;
+      width: 420px;
+      height: 320px;
+      margin: 0 auto;
+      border-radius: 23px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.27);
+      background: #cdefff;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .tank-bg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 23px;
+      z-index: 1;
+      position: absolute;
+      left: 0; top: 0;
+    }
+    .fish-png {
+      width: 80px;
+      height: auto;
+      position: absolute;
+      z-index: 2;
+      pointer-events: none;
+      transition: filter 0.35s;
+    }
+    .fish-png:hover {
+      filter: brightness(1.16);
+    }
+    .fish1 {
+      top: 54%; left: 5%;
+      animation: fish1-swim 8s linear infinite;
+    }
+    .fish2 {
+      top: 74%; left: 85%;
+      animation: fish2-swim 11s linear infinite;
+    }
+    .fish3 {
+      top: 20%; left: 18%;
+      transform: scaleX(1);
+      animation: fish3-swim 10s linear infinite;
+    }
+    @keyframes fish1-swim {
+  0% {
+    left: 5%;
+    transform: scaleX(1);
+  }
+  50% {
+    left: 60%;
+    transform: scaleX(1);
+  }
+  51% {
+    transform: scaleX(-1);
+  }
+  100% {
+    left: 5%;
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes fish2-swim {
+  0% {
+    left: 85%;
+    transform: scaleX(1);
+  }
+  50% {
+    left: 8%;
+    transform: scaleX(1);
+  }
+  51% {
+    transform: scaleX(-1);
+  }
+  100% {
+    left: 85%;
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes fish3-swim {
+  0% {
+    left: 18%;
+    transform: scaleX(1);
+  }
+  30% {
+    left: 60%;
+    transform: scaleX(1);
+  }
+  55% {
+    left: 50%;
+    transform: scaleX(1);
+  }
+  56% {
+    transform: scaleX(-1);
+  }
+  80% {
+    left: 10%;
+    transform: scaleX(-1);
+  }
+  100% {
+    left: 18%;
+    transform: scaleX(-1);
+  }
+}
+
+    body.dark-mode {
+      background: #012d39 !important;
+      color: #b0d4e5 !important;
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="bubbles" aria-hidden="true">
+    <div class="bubble small" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="bubble medium" style="left: 25%; animation-delay: 3s;"></div>
+    <div class="bubble large" style="left: 40%; animation-delay: 5s;"></div>
+    <div class="bubble small" style="left: 60%; animation-delay: 1.5s;"></div>
+    <div class="bubble medium" style="left: 75%; animation-delay: 2.5s;"></div>
+    <div class="bubble large" style="left: 85%; animation-delay: 4s;"></div>
+  </div>
+  <nav>
+    <a href="dashboard.html" class="logo" aria-label="Go to dashboard">
+    <img src="fincare.png" alt="Fincare Logo" style="height:40px; width:auto; vertical-align: middle;" />
+  </a>
+    <div class="hamburger" id="hamburger" aria-label="Toggle menu" role="button" tabindex="0" aria-expanded="false">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <div class="menu" id="menu" role="menu" aria-hidden="true">
+      <a href="dashboard.html" role="menuitem">Dashboard</a>
+      <a href="tanks.html" role="menuitem">Tanks</a>
+      <a href="fishes.html" role="menuitem">Fishes Info</a>
+      <a href="notifications.html" role="menuitem">Notification</a>
+      <a href="settings.html" role="menuitem">Settings</a>
+      <a href="support.html" role="menuitem">Support</a>
+    </div>
+  </nav>
+
+  <!-- Slideshow of fish photos -->
+  <section class="slideshow" id="slideshow" aria-label="Fish slideshow">
+    <article class="slide active" role="group" aria-roledescription="slide" aria-label="Goldfish">
+      <img src="fish1.jpg" alt="Goldfish" />
+      <p><strong>Goldfish:</strong> Goldfish are hardy and easy to care for freshwater fish.</p>
+    </article>
+    <article class="slide" role="group" aria-roledescription="slide" aria-label="Betta Fish">
+      <img src="fish2.jpg" alt="Betta Fish" />
+      <p><strong>Betta Fish:</strong> Betta Fish are known for their vibrant colors and aggressive behavior.</p>
+    </article>
+    <article class="slide" role="group" aria-roledescription="slide" aria-label="Guppy">
+      <img src="fish3.jpg" alt="Guppy" />
+      <p><strong>Guppy:</strong> Guppies are small, colorful fish popular in community tanks.</p>
+    </article>
+
+    <div class="slide-controls" id="slide-controls" role="tablist" aria-label="Slideshow controls">
+      <button class="control-btn active" data-index="0" role="tab" aria-selected="true" aria-controls="slide1" id="control1"></button>
+      <button class="control-btn" data-index="1" role="tab" aria-selected="false" aria-controls="slide2" id="control2"></button>
+      <button class="control-btn" data-index="2" role="tab" aria-selected="false" aria-controls="slide3" id="control3"></button>
+    </div>
+  </section>
+
+  <!-- Notification block -->
+  <section class="notification-block" aria-labelledby="notification-header">
+    <header class="notification-header" id="notification-header">
+      Notifications
+      <span class="see-all" tabindex="0" role="link" aria-label="See all notifications" onclick="goToNotifications()" onkeypress="if(event.key==='Enter'){goToNotifications();}">See all</span>
+    </header>
+    <ul class="notification-list" id="notification-list" role="list">
+      <li>Water quality low in Tank 1. Please clean it soon.</li>
+      <li>New fish added to Tank 1: Neon Tetra.</li>
+    </ul>
+  </section>
+
+  <!-- Animated tank block -->
+  <section class="tank-block" tabindex="0" role="button" aria-label="View Tank 1 details" onclick="goToTank()" onkeypress="if(event.key==='Enter'){goToTank();}">
+    <div class="dashboard-tank-scene">
+      <img src="pngwing.com (30).png" alt="Fish tank" class="tank-bg" />
+      <img src="pngwing.com (32).png" alt="Fish 1" class="fish-png fish1" />
+      <img src="pngwing.com (33).png" alt="Fish 2" class="fish-png fish2" />
+      <img src="pngwing.com (31).png" alt="Fish 3" class="fish-png fish3" />
+    </div>
+    <div style="font-size: 1.55rem; margin-top: 20px; font-weight:700;">Tank 1 - Click to View Details</div>
+  </section>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const menu = document.getElementById('menu');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+      hamburger.setAttribute('aria-expanded', !expanded);
+      menu.classList.toggle('show');
+      menu.setAttribute('aria-hidden', expanded);
+    });
+
+    hamburger.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        hamburger.click();
+      }
+    });
+
+    const slides = document.querySelectorAll('.slide');
+    const controls = document.querySelectorAll('.control-btn');
+    let currentSlide = 0;
+    let slideInterval;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+        controls[i].classList.toggle('active', i === index);
+        controls[i].setAttribute('aria-selected', i === index ? 'true' : 'false');
+      });
+      currentSlide = index;
+    }
+
+    controls.forEach(control => {
+      control.addEventListener('click', () => {
+        showSlide(parseInt(control.dataset.index));
+        resetInterval();
+      });
+    });
+
+    function nextSlide() {
+      let next = (currentSlide + 1) % slides.length;
+      showSlide(next);
+    }
+
+    function resetInterval() {
+      clearInterval(slideInterval);
+      slideInterval = setInterval(nextSlide, 5000);
+    }
+
+    slideInterval = setInterval(nextSlide, 5000);
+
+    function goToNotifications() {
+      window.location.href = 'notifications.html';
+    }
+
+    function goToTank() {
+      window.location.href = 'tanks.html';
+    }
+
+    function applyTheme(theme) {
+  if(theme === 'dark') {
+    document.body.classList.add('dark-mode');
+  } else {
+    document.body.classList.remove('dark-mode');
+  }
+}
+
+function loadSettings() {
+  const storedTheme = localStorage.getItem('fincare_theme') || 'light';
+      if(storedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+  // Also set your other settings (notifications etc)
+  }
+
+document.addEventListener('DOMContentLoaded', loadSettings);
+
+  </script>
+</body>
+</html>
