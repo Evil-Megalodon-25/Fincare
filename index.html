@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fincare - Login</title>
+  <style>
+    /* Your existing styles here */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #a0d8ef 0%, #004e7a 100%);
+      color: white;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+    }
+.bubbles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .bubble {
+      position: absolute;
+      bottom: -50px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      animation: rise 10s infinite ease-in;
+      opacity: 0.6;
+      filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+    }
+    .bubble.small { width: 15px; height: 15px; animation-duration: 8s; }
+    .bubble.medium { width: 25px; height: 25px; animation-duration: 12s; }
+    .bubble.large { width: 40px; height: 40px; animation-duration: 15s; }
+    @keyframes rise {
+      0% { transform: translateY(0) translateX(0); opacity: 0.6; }
+      50% { opacity: 0.9; }
+      100% { transform: translateY(-110vh) translateX(30px); opacity: 0; }
+    }
+    .login-container {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      width: 350px;
+      padding: 30px 40px;
+      text-align: center;
+      color: #004e7a;
+      position: relative;
+      z-index: 10;
+      animation: fadeInScale 0.7s ease forwards;
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    @keyframes fadeInScale {
+      to { opacity:1; transform: scale(1);}
+    }
+    .app-logo {
+      display: block;
+      margin: 0 auto 20px;
+      max-width: 150px;
+      height: auto;
+      user-select: none;
+      pointer-events: none;
+    }
+    h2 {
+      font-weight: 700;
+      margin-bottom: 25px;
+      text-shadow: 1px 1px 2px rgba(0,78,122,0.45);
+      letter-spacing: 1.5px;
+    }
+    .input-group {
+      position: relative;
+      margin-bottom: 28px;
+      width: 100%;
+    }
+    input[type="text"], input[type="password"] {
+      width: 280px;
+      max-width: 100%;
+      padding: 15px 40px 15px 12px;
+      border: 1.8px solid #007bbf;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #004e7a;
+      background: #f8fdff;
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+      box-sizing: border-box;
+    }
+    input[type="text"]:focus, input[type="password"]:focus {
+      outline: none;
+      border-color: #005f87;
+      box-shadow: 0 0 10px #007bbf;
+    }
+    .toggle-fish {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      width: 28px;
+      height: 28px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      outline: none;
+    }
+    .toggle-fish img {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      user-select: none;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .toggle-fish img.bone {
+      opacity: 0;
+    }
+    .toggle-fish:hover img.icon {
+      opacity: 0;
+    }
+    .toggle-fish:hover img.bone {
+      opacity: 1;
+    }
+    button {
+      width: 100%;
+      padding: 14px 0;
+      background: #007bbf;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,119,191,0.6);
+      transition: background-color 0.25s ease, transform 0.15s ease;
+      user-select: none;
+      margin: 10px 0 0 0;
+    }
+    button:hover {
+      background-color: #005f87;
+      transform: scale(1.05);
+    }
+    button:active {
+      transform: scale(0.95);
+    }
+    .switch-section {
+      margin: 10px auto 5px;
+      color: #005e7a;
+      font-size: 15px;
+    }
+    .switch-section a {
+      color: #bf2f2f;
+      cursor: pointer;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+    .error {
+      color: #b70000;
+      font-weight: 700;
+      font-size: 14px;
+      margin: 12px 0 0 0;
+      display: none;
+      user-select: none;
+      text-shadow: 0 0 5px #7d0000;
+    }
+  </style>
+  <title>Fincare Login</title>
+</head>
+<body>
+  <div class="bubbles" aria-hidden="true">
+    <div class="bubble small" style="left: 8%; animation-delay: 0s;"></div>
+    <div class="bubble medium" style="left: 20%; animation-delay: 3s;"></div>
+    <div class="bubble large" style="left: 35%; animation-delay: 5s;"></div>
+    <div class="bubble small" style="left: 55%; animation-delay: 1.7s;"></div>
+    <div class="bubble medium" style="left: 70%; animation-delay: 2.8s;"></div>
+    <div class="bubble large" style="left: 85%; animation-delay: 4.3s;"></div>
+  </div>
+  <div class="login-container" role="main" aria-label="Fincare login form">
+    <img src="fincare.png" alt="Fincare Logo" class="app-logo" />
+    <form id="login-form">
+      <h2>Fincare Login</h2>
+      <div class="input-group">
+        <input id="username" type="text" placeholder="Username" autocomplete="username" autocomplete="username"/>
+      </div>
+      <div class="input-group">
+        <input id="password" type="password" placeholder="Password" autocomplete="current-password" autocomplete="current-password"/>
+        <span class="toggle-fish" tabindex="0" role="button" aria-label="Toggle password visibility" id="toggle-fish-btn">
+          <img src="pngwing.com-31.png" alt="Fish" class="icon"/>
+          <img src="pngwing.com-31-bone.png" alt="Fish Bones" class="bone"/>
+        </span>
+      </div>
+      <div id="error-msg" class="error" role="alert">Invalid username or password</div>
+      <button type="button" onclick="login()">Login</button>
+      <div class="switch-section">
+        Don't have an account? <a href="#" onclick="showSignup();return false;">Sign up</a>
+      </div>
+    </form>
+    <form id="signup-form" style="display:none;">
+      <h2>Create Account</h2>
+      <div class="input-group">
+        <input id="signup-username" type="text" placeholder="Username" autocomplete="username"/>
+      </div>
+      <div class="input-group">
+        <input id="signup-password" type="password" placeholder="Password" autocomplete="new-password"/>
+        <span class="toggle-fish" tabindex="0" role="button" aria-label="Toggle password visibility" id="toggle-fish-signup">
+          <img src="pngwing.com-31.png" alt="Fish" class="icon"/>
+          <img src="pngwing.com-31-bone.png" alt="Fish Bones" class="bone"/>
+        </span>
+      </div>
+      <div class="input-group">
+        <input id="signup-repassword" type="password" placeholder="Re-enter Password" autocomplete="new-password"/>
+        <span class="toggle-fish" tabindex="0" role="button" aria-label="Toggle password visibility" id="toggle-fish-repassword">
+          <img src="pngwing.com-31.png" alt="Fish" class="icon"/>
+          <img src="pngwing.com-31-bone.png" alt="Fish Bones" class="bone"/>
+        </span>
+      </div>
+      <div id="signup-error" class="error" role="alert"></div>
+      <div id="signup-success" class="error" role="alert"></div>
+      <button type="button" onclick="signup()">Sign Up</button>
+      <div class="switch-section">
+        Already have an account? <a href="#" onclick="showLogin();return false;">Login</a>
+      </div>
+    </form>
+  </div>
+  <script>
+    const setupToggleFish = (inputId, toggleId) => {
+      const input = document.getElementById(inputId);
+      const toggle = document.getElementById(toggleId);
+
+      toggle.addEventListener('mouseenter', () => {
+        input.type = 'text';
+        toggle.classList.add('on');
+      });
+
+      toggle.addEventListener('mouseleave', () => {
+        input.type = 'password';
+        toggle.classList.remove('on');
+      });
+
+      toggle.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (input.type === 'password') {
+            input.type = 'text';
+            toggle.classList.add('on');
+          } else {
+            input.type = 'password';
+            toggle.classList.remove('on');
+          }
+        }
+      });
+    };
+
+    setupToggleFish('password', 'toggle-fish-btn');
+    setupToggleFish('signup-password', 'toggle-fish-signup');
+    setupToggleFish('signup-repassword', 'toggle-fish-repassword');
+
+    function showSignup() {
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('signup-form').style.display = 'block';
+      clearMessages();
+      document.getElementById('signup-username').focus();
+    }
+
+    function showLogin() {
+      document.getElementById('login-form').style.display = 'block';
+      document.getElementById('signup-form').style.display = 'none';
+      clearMessages();
+      document.getElementById('username').focus();
+    }
+
+    function clearMessages() {
+      document.getElementById('error-msg').style.display = 'none';
+      document.getElementById('signup-error').style.display = 'none';
+      document.getElementById('signup-success').style.display = 'none';
+    }
+
+    let fakeUser = {username:'user',password:'pass123'};
+
+    function login() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      clearMessages();
+      if(user === fakeUser.username && pass === fakeUser.password){
+        window.location.href = 'dashboard.html';
+      } else {
+        document.getElementById('error-msg').style.display = 'block';
+      }
+    }
+
+    function signup() {
+      const user = document.getElementById('signup-username').value.trim();
+      const pass = document.getElementById('signup-password').value;
+      const repass = document.getElementById('signup-repassword').value;
+      clearMessages();
+      if(!user || !pass || !repass){
+        const err = document.getElementById('signup-error');
+        err.textContent = 'All fields are required.';
+        err.style.display = 'block';
+        return;
+      }
+      if(pass.length < 5){
+        const err = document.getElementById('signup-error');
+        err.textContent = 'Password must be at least 5 characters.';
+        err.style.display = 'block';
+        return;
+      }
+      if(pass !== repass){
+        const err = document.getElementById('signup-error');
+        err.textContent = 'Passwords do not match.';
+        err.style.display = 'block';
+        return;
+      }
+      fakeUser = {username:user,password:pass};
+      const succ = document.getElementById('signup-success');
+      succ.textContent = 'Account created! You can login.';
+      succ.style.display = 'block';
+      setTimeout(() => {
+        showLogin();
+      }, 2000);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){
+        if(document.getElementById('login-form').style.display === 'block'){
+          login();
+        } else {
+          signup();
+        }
+      }
+    });
+
+    const applyTheme = () => {
+      const theme = localStorage.getItem('fincare_theme') || 'light';
+      if(theme === 'dark'){
+        document.body.style.background = '#012d39';
+        document.body.style.color = '#b2f2b2';
+      } else {
+        document.body.style.background = 'linear-gradient(180deg, #a0def, #004e7a)';
+        document.body.style.color = 'white';
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyTheme();
+    });
+  </script>
+</body>
+</html>
+
+
+
+
