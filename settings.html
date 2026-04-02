@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fincare - Settings</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Segoe UI;
+            background: radial-gradient(circle, #0a1f3d, #000);
+            color: white;
+            padding-top: 80px;
+        }
+
+        /* NAVBAR copied from dashboard */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 6%;
+            background: linear-gradient(180deg, rgba(28, 53, 86, 0.45), rgba(11, 25, 51, 0.45));
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+
+        .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #00f2ff;
+}
+
+.logo-img {
+    height: 40px;
+    border-radius: 8px;
+}
+
+        /* rectangular portrait preview for profile upload */
+        .profile-preview {
+            width: 140px;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+        }
+
+        .menu a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .menu a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.menu a:hover {
+    color: #00f2ff;
+}
+
+.menu a.logout {
+    font-weight: 700;
+}
+
+.menu [role="button"] {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 700;
+}
+
+.menu [role="button"]:hover {
+    color: #00f2ff;
+}
+
+        /* TITLE */
+
+        .title {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 28px;
+        }
+
+        /* SETTINGS CONTAINER */
+
+        .settings-container {
+            width: 60%;
+            margin: 40px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* SETTINGS CARD */
+
+        .setting-card {
+            background: linear-gradient(180deg,
+                    rgba(28, 53, 86, 0.45),
+                    rgba(11, 25, 51, 0.45));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        /* narrower card variant used for profile & account to avoid overlap */
+        .setting-card.narrow {
+            max-width: 420px;
+            width: 100%;
+            align-self: center; /* center narrow cards in left column */
+            margin: 0;
+        }
+
+        /* ensure vertical spacing between isolated cards */
+        .title.zoom-scroll,
+        .setting-card {
+            margin-bottom: 22px;
+        }
+
+        .setting-card:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        /* LABEL */
+
+        .setting-label {
+            font-size: 18px;
+        }
+
+        /* BUTTONS */
+
+        .btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #5fc0df;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* SELECT */
+
+        select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: none;
+        }
+
+        /* TOGGLE SWITCH */
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #555;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background: #5fc0df;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .zoom-scroll {
+            transition: transform 0.25s ease-out;
+            position: relative;
+            /* REQUIRED for z-index */
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <nav class="navbar">
+        <!-- left: logo + voice controls -->
+        <div style="display:flex; align-items:center; gap:18px;">
+            <div class="logo">
+                <img src="fincare.png" class="logo-img">
+                <span>Fincare</span>
+            </div>
+
+            <!-- Voice controls: toggle + language select -->
+            <div class="voice-controls" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
+                <label style="display:flex;align-items:center;gap:8px;color:white;font-size:14px;cursor:pointer;">
+                    <input id="voiceToggle" type="checkbox" aria-label="Enable voice over" />
+                    <span style="opacity:0.95">Voice</span>
+                </label>
+                <select id="voiceLang" aria-label="Voice language" style="background:rgba(255,255,255,0.06);color:white;border-radius:8px;padding:6px;font-size:13px;border:1px solid rgba(255,255,255,0.08);">
+                    <option value="en-US">English</option>
+                    <option value="hi-IN">Hindi</option>
+                    <option value="mr-IN">Marathi</option>
+                    <option value="kn-IN">Kannada</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- right: menu -->
+        <div class="menu" style="margin-left:auto;">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="tank.html">My Tank</a>
+            <a href="info.html">Encyclopedia</a>
+            <a href="settings.html">Settings</a>
+            <a onclick="logout()" role="button">Logout</a>
+        </div>
+    </nav>
+
+
+    <div class="title zoom-scroll">
+        Application Settings
+    </div>
+
+    <div class="settings-wrap">
+        <div class="left-col">
+            <!-- left column intentionally empty to keep two-column layout -->
+        </div>
+
+        <div class="right-col settings-container zoom-scroll">
+            <!-- Profile Picture (moved to right column so it matches other cards' width) -->
+            <div class="setting-card zoom-scroll">
+                <div style="display:flex; align-items:center; gap:14px;">
+                    <div>
+                        <div class="setting-label">Profile Picture</div>
+                        <!-- hidden file input: upload button will trigger this -->
+                        <input type="file" id="profilePic" accept="image/*" style="display:none;">
+                    </div>
+
+                    <!-- live rectangular preview -->
+                    <img id="profilePreview" class="profile-preview" src="" alt="Preview" />
+                </div>
+
+                <button class="btn" id="uploadBtn">Upload</button>
+            </div>
+
+            <!-- moved Account Info into right column so it matches width of other right-column cards -->
+            <div class="setting-card zoom-scroll">
+                <div>
+                    <div class="setting-label zoom-scroll">Account Info</div>
+                    <div style="font-size:14px; opacity:0.8;">
+                        Username: User123 <br>
+                        Email: user@email.com
+                    </div>
+                </div>
+                <button class="btn">Edit</button>
+            </div>
+
+            <div class="setting-card zoom-scroll">
+
+                <div>
+                    <div class="setting-label zoom-scroll">Change Password</div>
+
+                    <div class="change-pass-form" style="display:flex;flex-direction:column;gap:10px;">
+                        <label class="setting-label" style="font-size:14px;">Old Password</label>
+                        <input type="password" id="oldPass" placeholder="Old Password">
+
+                        <label class="setting-label" style="font-size:14px;">New Password</label>
+                        <input type="password" id="newPass" placeholder="New Password">
+                        <div class="small-note">Choose a strong password (8+ characters)</div>
+                    </div>
+                </div>
+
+                <div class="setting-actions">
+                    <button class="btn" onclick="changePassword()">Update</button>
+                </div>
+
+            </div>
+
+            <!-- THEME -->
+
+            <div class="setting-card zoom-scroll">
+
+                <div class="setting-label zoom-scroll">
+                    Theme (Dark / Light)
+                </div>
+
+                <button class="btn" onclick="toggleTheme()">
+                    Toggle Theme
+                </button>
+
+            </div>
+
+
+            <!-- LANGUAGE -->
+
+            <div class="setting-card zoom-scroll">
+
+                <div class="setting-label zoom-scroll">
+                    Language
+                </div>
+
+                <select id="language">
+
+                    <option>English</option>
+                    <option>Hindi</option>
+                    <option>Marathi</option>
+                    <option>Kannada</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- NOTIFICATIONS -->
+
+            <div class="setting-card zoom-scroll">
+
+                <div class="setting-label zoom-scroll">
+                    Notifications
+                </div>
+
+                <label class="switch">
+                    <input type="checkbox" id="notifyToggle">
+                    <span class="slider"></span>
+                </label>
+
+            </div>
+
+
+            <!-- CLEAR DATA -->
+
+            <div class="setting-card zoom-scroll">
+
+                <div class="setting-label zoom-scroll">
+                    Reset Aquarium Data
+                </div>
+
+                <button class="btn" onclick="resetData()">
+                    Clear Tanks
+                </button>
+
+            </div>
+
+
+            <!-- SAVE -->
+
+            <div class="setting-card zoom-scroll">
+
+                <div class="setting-label zoom-scroll">
+                    Save Settings
+                </div>
+
+                <button class="btn" onclick="saveSettings()">
+                    Save
+                </button>
+
+            </div>
+
+
+        </div> <!-- right-col -->
+    </div> <!-- settings-wrap -->
+
+
+
+    <script>
+
+        /* LOAD SETTINGS */
+
+        const savedTheme = localStorage.getItem("theme")
+        const savedLang = localStorage.getItem("language")
+        const savedNotify = localStorage.getItem("notify")
+
+        if (savedLang) {
+            document.getElementById("language").value = savedLang
+        }
+
+        if (savedNotify === "true") {
+            document.getElementById("notifyToggle").checked = true
+        }
+
+        /* THEME */
+
+        function toggleTheme() {
+
+            let current = localStorage.getItem("theme");
+
+            if (current === "light") {
+                localStorage.setItem("theme", "dark");
+            } else {
+                localStorage.setItem("theme", "light");
+            }
+
+            location.reload(); // apply everywhere
+        }
+
+        /* SAVE SETTINGS */
+
+        async function saveSettings() {
+
+            let lang = document.getElementById("language").value;
+            let notify = document.getElementById("notifyToggle").checked;
+
+            const response = await fetch("http://127.0.0.1:8000/save-settings", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    language: lang,
+                    notify: notify
+                })
+            });
+
+            const data = await response.json();
+
+            alert("Saved to server ✅");
+        }
+
+        /* RESET DATA */
+
+        function resetData() {
+
+            if (confirm("Delete all tanks data?")) {
+
+                localStorage.removeItem("tanks")
+
+                alert("All tanks removed")
+
+            }
+
+        }
+
+        const zoomSections = document.querySelectorAll(".zoom-scroll");
+
+        window.addEventListener("scroll", () => {
+            zoomSections.forEach(section => {
+
+                const rect = section.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+
+                let center = rect.top + rect.height / 2;
+                let distance = Math.abs(windowHeight / 2 - center);
+
+                let scale = 1 + (1 - distance / windowHeight) * 0.10;
+                scale = Math.max(0.5, Math.min(1.25, scale));
+
+                section.style.transform = `scale(${scale})`;
+            });
+        });
+
+        function changePassword() {
+
+            let oldPass = document.getElementById("oldPass").value
+            let newPass = document.getElementById("newPass").value
+
+            let savedPass = localStorage.getItem("password") || "1234"
+
+            if (oldPass !== savedPass) {
+                alert("Incorrect old password")
+                return
+            }
+
+            localStorage.setItem("password", newPass)
+            alert("Password updated successfully")
+        }
+
+        function logout() {
+            localStorage.removeItem("fincareUser");
+            window.location.href = "index.html";
+        }
+
+        function saveProfilePic() {
+
+            const file = document.getElementById("profilePic").files[0];
+
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function () {
+                localStorage.setItem("profilePic", reader.result);
+                document.getElementById("profilePreview").src = reader.result;
+            }
+
+            reader.readAsDataURL(file);
+        }
+
+        // live preview + auto-save on file select
+        document.getElementById('profilePic').addEventListener('change', function () {
+            const f = this.files && this.files[0];
+            if (!f) return;
+            const r = new FileReader();
+            r.onload = () => {
+                document.getElementById('profilePreview').src = r.result;
+                localStorage.setItem('profilePic', r.result); // auto-save immediately
+            };
+            r.readAsDataURL(f);
+        });
+
+        // Upload button should open the file picker
+        document.getElementById('uploadBtn').addEventListener('click', () => {
+            document.getElementById('profilePic').click();
+        });
+
+        // load on start
+        window.addEventListener("load", () => {
+            const saved = localStorage.getItem("profilePic");
+            if (saved) {
+                document.getElementById("profilePreview").src = saved;
+            }
+        });
+
+        localStorage.setItem("user", JSON.stringify({
+            username: "user123",
+            password: "1234",
+            email: "user@email.com"
+        }));
+
+        function login() {
+
+            const user = JSON.parse(localStorage.getItem("user"));
+
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+
+            if (user && user.username === username && user.password === password) {
+
+                localStorage.setItem("fincareUser", "logged");
+                window.location.href = "dashboard.html";
+
+            } else {
+                alert("Invalid login");
+            }
+        }
+
+        if (localStorage.getItem("fincareUser") !== "logged") {
+            window.location.href = "index.html";
+        }
+    </script>
+
+    <script>
+/* Voice-over for navbar clicks with voice selection fallback to voices list */
+(function () {
+    if (!('speechSynthesis' in window)) return;
+
+    const STORE_ENABLED = 'voiceEnabled';
+    const STORE_LANG = 'voiceLang';
+    const toggleEl = document.getElementById('voiceToggle');
+    const langEl = document.getElementById('voiceLang');
+
+    function loadEnabled() { return localStorage.getItem(STORE_ENABLED) === '1'; }
+    function loadLang() { return localStorage.getItem(STORE_LANG) || 'en-US'; }
+    function saveEnabled(v) { localStorage.setItem(STORE_ENABLED, v ? '1' : '0'); }
+    function saveLang(v) { localStorage.setItem(STORE_LANG, v); }
+
+    if (toggleEl) toggleEl.checked = loadEnabled();
+    if (langEl) langEl.value = loadLang();
+    if (toggleEl) toggleEl.addEventListener('change', () => saveEnabled(toggleEl.checked));
+    if (langEl) langEl.addEventListener('change', () => saveLang(langEl.value));
+
+    // manage available voices
+    let availableVoices = [];
+
+    const translations = {
+    "Dashboard": {
+        "hi-IN": "डैशबोर्ड",
+        "mr-IN": "डॅशबोर्ड",
+        "kn-IN": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್"
+    },
+    "My Tank": {
+        "hi-IN": "मेरा टैंक",
+        "mr-IN": "माझा टँक",
+        "kn-IN": "ನನ್ನ ಟ್ಯಾಂಕ್"
+    },
+    "Encyclopedia": {
+        "hi-IN": "विश्वकोश",
+        "mr-IN": "विश्वकोश",
+        "kn-IN": "ವಿಶ್ವಕೋಶ"
+    },
+    "Settings": {
+        "hi-IN": "सेटिंग्स",
+        "mr-IN": "सेटिंग्ज",
+        "kn-IN": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
+    },
+    "Logout": {
+        "hi-IN": "लॉग आउट",
+        "mr-IN": "लॉग आउट",
+        "kn-IN": "ಲಾಗ್ ಔಟ್"
+    }
+};
+
+    function refreshVoices() {
+        availableVoices = window.speechSynthesis.getVoices() || [];
+    }
+    refreshVoices();
+    window.speechSynthesis.onvoiceschanged = refreshVoices;
+
+    function findVoiceForLang(lang) {
+        if (!availableVoices.length) refreshVoices();
+        return availableVoices.find(v => v.lang && v.lang.toLowerCase().startsWith(lang.toLowerCase()))
+            || availableVoices.find(v => v.lang && v.lang.split('-')[0].toLowerCase() === lang.split('-')[0].toLowerCase());
+    }
+
+    function speak(text, onend) {
+        try {
+            window.speechSynthesis.cancel();
+            const lang = loadLang() || 'en-US';
+            const u = new SpeechSynthesisUtterance(text);
+
+            if (lang === "hi-IN" || lang === "mr-IN" || lang === "kn-IN") {
+                const hindiVoice = availableVoices.find(v => v.name === "Lekha" || v.lang === "hi-IN");
+                if (hindiVoice) {
+                    u.voice = hindiVoice;
+                    u.lang = "hi-IN";
+                } else {
+                    u.lang = "hi-IN";
+                }
+            } else {
+                const voice = findVoiceForLang(lang);
+                if (voice) {
+                    u.voice = voice;
+                    u.lang = voice.lang || lang;
+                } else {
+                    u.lang = lang;
+                }
+            }
+
+            u.volume = 1;
+            u.rate = 0.95;
+            u.pitch = 1;
+            u.onend = () => { if (typeof onend === 'function') onend(); };
+            window.speechSynthesis.speak(u);
+        } catch (err) {
+            console.warn('Speech synth error:', err);
+            if (typeof onend === 'function') onend();
+        }
+    }
+
+    // attach handler: when enabled, speak then navigate
+    document.querySelectorAll('.menu a, .menu [role="button"]').forEach(el => {
+        const inlineClick = el.getAttribute('onclick');
+        if (inlineClick) {
+            el.setAttribute('data-onclick', inlineClick);
+            el.removeAttribute('onclick');
+        }
+
+        el.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            const label = (el.innerText || el.textContent || el.getAttribute('aria-label') || 'Page').trim();
+            const lang = loadLang() || 'en-US';
+
+            let speakText = label === 'Logout' ? label : label + ' page';
+
+            if (lang !== "en-US" && translations[label]) {
+                speakText = translations[label][lang] || label;
+            }
+
+            let actionDone = false;
+            const executeAction = () => {
+                if (actionDone) return;
+                actionDone = true;
+                const href = el.getAttribute && el.getAttribute('href');
+                const hasHref = href && href !== '#' && !href.startsWith('javascript:');
+                if (hasHref) {
+                    setTimeout(() => { window.location.href = href; }, 120);
+                } else {
+                    const clickAction = el.getAttribute('data-onclick');
+                    if (clickAction) {
+                        try { new Function(clickAction).call(el); } catch (e) { console.error(e); }
+                    }
+                }
+            };
+
+            if (!loadEnabled()) {
+                executeAction();
+                return;
+            }
+
+            speak(speakText, executeAction);
+            setTimeout(executeAction, 2000); // safety fallback
+        }, { passive: false });
+    });
+})();
+    </script>
+</body>
+
+</html>
