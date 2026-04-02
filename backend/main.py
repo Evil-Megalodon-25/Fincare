@@ -56,9 +56,14 @@ async def chat(data: Chat):
 
         result = response.json()
 
-        return {
-            "reply": result["choices"][0]["message"]["content"]
-        }
+        if "choices" in result:
+            return {
+                "reply": result["choices"][0]["message"]["content"]
+            }
+        else:
+            return {
+                "error": result
+            }
 
     except Exception as e:
         return {"error": str(e)}
