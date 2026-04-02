@@ -34,47 +34,47 @@
         }
 
         .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 22px;
-    font-weight: bold;
-    color: #00f2ff;
-}
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #00f2ff;
+        }
 
-.logo-img {
-    height: 40px;
-    border-radius: 8px;
-}
+        .logo-img {
+            height: 40px;
+            border-radius: 8px;
+        }
 
         .menu a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: 0.3s;
-}
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-.menu a:hover {
-    color: #00f2ff;
-}
+        .menu a:hover {
+            color: #00f2ff;
+        }
 
-.menu a.logout {
-    font-weight: 700;
-}
+        .menu a.logout {
+            font-weight: 700;
+        }
 
-.menu [role="button"] {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: 0.3s;
-    font-weight: 700;
-}
+        .menu [role="button"] {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 700;
+        }
 
-.menu [role="button"]:hover {
-    color: #00f2ff;
-}
+        .menu [role="button"]:hover {
+            color: #00f2ff;
+        }
 
         /* PAGE TITLE */
 
@@ -267,7 +267,8 @@
             bottom: 0;
             right: 0;
             pointer-events: none;
-            z-index: 100000; /* ensure entire container is above all page elements */
+            z-index: 100000;
+            /* ensure entire container is above all page elements */
         }
 
         .ai-button {
@@ -275,7 +276,8 @@
             bottom: 30px;
             right: 30px;
             cursor: pointer;
-            z-index: 100001; /* above container and everything else */
+            z-index: 100001;
+            /* above container and everything else */
             pointer-events: auto;
         }
 
@@ -283,8 +285,8 @@
             width: 70px;
             height: 70px;
             animation: floatAI 2.8s ease-in-out infinite;
-            transition: transform 220ms cubic-bezier(.2,.9,.2,1);
-            
+            transition: transform 220ms cubic-bezier(.2, .9, .2, 1);
+
         }
 
         .ai-button img:hover {
@@ -292,9 +294,17 @@
         }
 
         @keyframes floatAI {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-8px) rotate(-1deg); }
-            100% { transform: translateY(0); }
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px) rotate(-1deg);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
         }
 
         .ai-popup {
@@ -308,7 +318,8 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             display: none;
-            z-index: 100002; /* popup sits above button and all content */
+            z-index: 100002;
+            /* popup sits above button and all content */
             max-width: 260px;
             font-size: 14px;
             line-height: 1.3;
@@ -328,7 +339,8 @@
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.55);
-            z-index: 100003; /* chat window topmost */
+            z-index: 100003;
+            /* chat window topmost */
             pointer-events: auto;
         }
 
@@ -340,8 +352,17 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.12);
         }
 
-        .ai-title { display:flex; align-items:center; gap:10px; font-weight:600; }
-        .ai-logo { width:36px; border-radius:8px; }
+        .ai-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .ai-logo {
+            width: 36px;
+            border-radius: 8px;
+        }
 
         .ai-messages {
             flex: 1;
@@ -374,7 +395,7 @@
         }
 
         .typing-box {
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             color: #fff;
             padding: 8px 12px;
             border-radius: 12px;
@@ -403,29 +424,92 @@
             animation: dot 0.9s ease-in-out infinite;
             will-change: transform, opacity;
         }
-        .typing-dots span:nth-child(1){ animation-delay: 0s; }
-        .typing-dots span:nth-child(2){ animation-delay: 0.12s; }
-        .typing-dots span:nth-child(3){ animation-delay: 0.24s; }
+
+        .typing-dots span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.12s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.24s;
+        }
 
         @keyframes dot {
-            0%   { transform: translateY(0);  opacity: .3; }
-            40%  { transform: translateY(-6px); opacity: 1; }
-            100% { transform: translateY(0);  opacity: .3; }
+            0% {
+                transform: translateY(0);
+                opacity: .3;
+            }
+
+            40% {
+                transform: translateY(-6px);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: .3;
+            }
         }
 
         /* subtle message fade so incoming bot replies feel identical to dashboard */
-        .bot-msg { animation: chatFade .18s ease both; }
-        @keyframes chatFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .bot-msg {
+            animation: chatFade .18s ease both;
+        }
+
+        @keyframes chatFade {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         /* Respect user preference for reduced motion */
         @media (prefers-reduced-motion: reduce) {
-            .typing-dots span { animation: none !important; opacity: .9; transform: none; }
-            .ai-button img { animation: none !important; }
+            .typing-dots span {
+                animation: none !important;
+                opacity: .9;
+                transform: none;
+            }
+
+            .ai-button img {
+                animation: none !important;
+            }
         }
 
-        .ai-input { display:flex; gap:8px; padding:10px; border-top:1px solid rgba(255,255,255,0.06); }
-        .ai-input input { flex:1; padding:10px; border-radius:10px; border:none; background: rgba(255,255,255,0.03); color:#fff; outline:none; }
-        .ai-input button { width:44px; border-radius:8px; border:none; background:var(--primary,#00f2ff); cursor:pointer; color:#000; font-weight:700; }
+        .ai-input {
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .ai-input input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255, 255, 255, 0.03);
+            color: #fff;
+            outline: none;
+        }
+
+        .ai-input button {
+            width: 44px;
+            border-radius: 8px;
+            border: none;
+            background: var(--primary, #00f2ff);
+            cursor: pointer;
+            color: #000;
+            font-weight: 700;
+        }
     </style>
 </head>
 
@@ -445,7 +529,8 @@
                     <input id="voiceToggle" type="checkbox" aria-label="Enable voice over" />
                     <span style="opacity:0.95">Voice</span>
                 </label>
-                <select id="voiceLang" aria-label="Voice language" style="background:rgba(255,255,255,0.06);color:white;border-radius:8px;padding:6px;font-size:13px;border:1px solid rgba(255,255,255,0.08);">
+                <select id="voiceLang" aria-label="Voice language"
+                    style="background:rgba(255,255,255,0.06);color:white;border-radius:8px;padding:6px;font-size:13px;border:1px solid rgba(255,255,255,0.08);">
                     <option value="en-US">English</option>
                     <option value="hi-IN">Hindi</option>
                     <option value="mr-IN">Marathi</option>
@@ -462,7 +547,7 @@
             <a href="settings.html">Settings</a>
             <a onclick="logout()" role="button">Logout</a>
         </div>
-     </nav>
+    </nav>
 
     <div class="header-section zoom-scroll">
 
@@ -828,16 +913,17 @@ Large eel that hides in rocks and hunts smaller fish.`
         }
 
     </script>
- 
+
     <!-- AI CHATBOT -->
- 
+
     <div class="ai-chatbot">
         <div class="ai-button" onclick="toggleChat(); closePopup();" title="Ask Jeff">
             <img src="ai-bot.png" alt="AI">
         </div>
- 
-        <div class="ai-popup" id="aiPopup" aria-hidden="true">Hi, I'm Jeff 👋 your aquarium AI assistant. Ask me anything!</div>
- 
+
+        <div class="ai-popup" id="aiPopup" aria-hidden="true">Hi, I'm Jeff 👋 your aquarium AI assistant. Ask me
+            anything!</div>
+
         <div class="ai-chat-window" id="chatWindow" role="dialog" aria-label="AI chat window" style="display:none;">
             <div class="ai-header">
                 <div class="ai-title">
@@ -853,34 +939,34 @@ Large eel that hides in rocks and hunts smaller fish.`
             </div>
         </div>
     </div>
- 
+
     <script>
         // Safe helper to escape HTML in messages
         function escapeHtml(s) {
             return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
         }
- 
+
         let chatInitialized = false;
- 
+
         function closePopup() {
             const popup = document.getElementById("aiPopup");
             if (popup) popup.style.display = "none";
         }
- 
+
         function toggleChat() {
             const chat = document.getElementById("chatWindow");
             const messages = document.getElementById("chatMessages");
             if (!chat || !messages) return;
- 
+
             // toggle display
             if (getComputedStyle(chat).display === 'flex') {
                 chat.style.display = 'none';
                 return;
             }
- 
+
             chat.style.display = 'flex';
             messages.scrollTop = messages.scrollHeight;
- 
+
             // welcome typing once
             if (!chatInitialized) {
                 messages.insertAdjacentHTML('beforeend', `
@@ -899,24 +985,24 @@ Large eel that hides in rocks and hunts smaller fish.`
                 chatInitialized = true;
             }
         }
- 
+
         async function sendMessage() {
             const input = document.getElementById('userInput');
             const messages = document.getElementById('chatMessages');
             if (!input || !messages) return;
             const text = input.value.trim();
             if (!text) return;
- 
+
             messages.insertAdjacentHTML('beforeend', `<div class="user-msg">${escapeHtml(text)}</div>`);
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
- 
+
             const loadingId = 'loadingTyping';
             messages.insertAdjacentHTML('beforeend', `<div class="typing-box" id="${loadingId}">Jeff is typing...<div class="typing-dots"><span></span><span></span><span></span></div></div>`);
             messages.scrollTop = messages.scrollHeight;
- 
+
             try {
-                const res = await fetch('http://127.0.0.1:8000/chat', {
+                const res = await fetch('https://fincare-backend.onrender.com/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: text })
@@ -931,165 +1017,165 @@ Large eel that hides in rocks and hunts smaller fish.`
                 if (loadingEl) loadingEl.remove();
                 messages.insertAdjacentHTML('beforeend', `<div class="bot-msg">Error: ${escapeHtml(err.message || 'Network error')}</div>`);
             }
- 
+
             messages.scrollTop = messages.scrollHeight;
         }
- 
+
         // wire send button + Enter key
         document.addEventListener('DOMContentLoaded', () => {
             const sendBtn = document.getElementById('sendBtn');
             const input = document.getElementById('userInput');
             if (sendBtn) sendBtn.addEventListener('click', sendMessage);
-            if (input) input.addEventListener('keydown', (e) => { if(e.key==='Enter'){ e.preventDefault(); sendMessage(); }});
+            if (input) input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
         });
- 
-        window.addEventListener('load', ()=>{ const popup = document.getElementById('aiPopup'); if(!popup) return; popup.style.display='block'; setTimeout(()=>popup.style.display='none',3000); });
+
+        window.addEventListener('load', () => { const popup = document.getElementById('aiPopup'); if (!popup) return; popup.style.display = 'block'; setTimeout(() => popup.style.display = 'none', 3000); });
     </script>
- 
+
     <script>
-/* Voice-over for navbar clicks with voice selection fallback to voices list */
-(function () {
-    if (!('speechSynthesis' in window)) return;
+        /* Voice-over for navbar clicks with voice selection fallback to voices list */
+        (function () {
+            if (!('speechSynthesis' in window)) return;
 
-    const STORE_ENABLED = 'voiceEnabled';
-    const STORE_LANG = 'voiceLang';
-    const toggleEl = document.getElementById('voiceToggle');
-    const langEl = document.getElementById('voiceLang');
+            const STORE_ENABLED = 'voiceEnabled';
+            const STORE_LANG = 'voiceLang';
+            const toggleEl = document.getElementById('voiceToggle');
+            const langEl = document.getElementById('voiceLang');
 
-    function loadEnabled() { return localStorage.getItem(STORE_ENABLED) === '1'; }
-    function loadLang() { return localStorage.getItem(STORE_LANG) || 'en-US'; }
-    function saveEnabled(v) { localStorage.setItem(STORE_ENABLED, v ? '1' : '0'); }
-    function saveLang(v) { localStorage.setItem(STORE_LANG, v); }
+            function loadEnabled() { return localStorage.getItem(STORE_ENABLED) === '1'; }
+            function loadLang() { return localStorage.getItem(STORE_LANG) || 'en-US'; }
+            function saveEnabled(v) { localStorage.setItem(STORE_ENABLED, v ? '1' : '0'); }
+            function saveLang(v) { localStorage.setItem(STORE_LANG, v); }
 
-    if (toggleEl) toggleEl.checked = loadEnabled();
-    if (langEl) langEl.value = loadLang();
-    if (toggleEl) toggleEl.addEventListener('change', () => saveEnabled(toggleEl.checked));
-    if (langEl) langEl.addEventListener('change', () => saveLang(langEl.value));
+            if (toggleEl) toggleEl.checked = loadEnabled();
+            if (langEl) langEl.value = loadLang();
+            if (toggleEl) toggleEl.addEventListener('change', () => saveEnabled(toggleEl.checked));
+            if (langEl) langEl.addEventListener('change', () => saveLang(langEl.value));
 
-    // manage available voices
-    let availableVoices = [];
+            // manage available voices
+            let availableVoices = [];
 
-    const translations = {
-    "Dashboard": {
-        "hi-IN": "डैशबोर्ड",
-        "mr-IN": "डॅशबोर्ड",
-        "kn-IN": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್"
-    },
-    "My Tank": {
-        "hi-IN": "मेरा टैंक",
-        "mr-IN": "माझा टँक",
-        "kn-IN": "ನನ್ನ ಟ್ಯಾಂಕ್"
-    },
-    "Encyclopedia": {
-        "hi-IN": "विश्वकोश",
-        "mr-IN": "विश्वकोश",
-        "kn-IN": "ವಿಶ್ವಕೋಶ"
-    },
-    "Settings": {
-        "hi-IN": "सेटिंग्स",
-        "mr-IN": "सेटिंग्ज",
-        "kn-IN": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
-    },
-    "Logout": {
-        "hi-IN": "लॉग आउट",
-        "mr-IN": "लॉग आउट",
-        "kn-IN": "ಲಾಗ್ ಔಟ್"
-    }
-};
-
-    function refreshVoices() {
-        availableVoices = window.speechSynthesis.getVoices() || [];
-    }
-    refreshVoices();
-    window.speechSynthesis.onvoiceschanged = refreshVoices;
-
-    function findVoiceForLang(lang) {
-        if (!availableVoices.length) refreshVoices();
-        return availableVoices.find(v => v.lang && v.lang.toLowerCase().startsWith(lang.toLowerCase()))
-            || availableVoices.find(v => v.lang && v.lang.split('-')[0].toLowerCase() === lang.split('-')[0].toLowerCase());
-    }
-
-    function speak(text, onend) {
-        try {
-            window.speechSynthesis.cancel();
-            const lang = loadLang() || 'en-US';
-            const u = new SpeechSynthesisUtterance(text);
-
-            if (lang === "hi-IN" || lang === "mr-IN" || lang === "kn-IN") {
-                const hindiVoice = availableVoices.find(v => v.name === "Lekha" || v.lang === "hi-IN");
-                if (hindiVoice) {
-                    u.voice = hindiVoice;
-                    u.lang = "hi-IN";
-                } else {
-                    u.lang = "hi-IN";
-                }
-            } else {
-                const voice = findVoiceForLang(lang);
-                if (voice) {
-                    u.voice = voice;
-                    u.lang = voice.lang || lang;
-                } else {
-                    u.lang = lang;
-                }
-            }
-
-            u.volume = 1;
-            u.rate = 0.95;
-            u.pitch = 1;
-            u.onend = () => { if (typeof onend === 'function') onend(); };
-            window.speechSynthesis.speak(u);
-        } catch (err) {
-            console.warn('Speech synth error:', err);
-            if (typeof onend === 'function') onend();
-        }
-    }
-
-    // attach handler: when enabled, speak then navigate
-    document.querySelectorAll('.menu a, .menu [role="button"]').forEach(el => {
-        const inlineClick = el.getAttribute('onclick');
-        if (inlineClick) {
-            el.setAttribute('data-onclick', inlineClick);
-            el.removeAttribute('onclick');
-        }
-
-        el.addEventListener('click', function (ev) {
-            ev.preventDefault();
-            const label = (el.innerText || el.textContent || el.getAttribute('aria-label') || 'Page').trim();
-            const lang = loadLang() || 'en-US';
-
-            let speakText = label === 'Logout' ? label : label + ' page';
-
-            if (lang !== "en-US" && translations[label]) {
-                speakText = translations[label][lang] || label;
-            }
-
-            let actionDone = false;
-            const executeAction = () => {
-                if (actionDone) return;
-                actionDone = true;
-                const href = el.getAttribute && el.getAttribute('href');
-                const hasHref = href && href !== '#' && !href.startsWith('javascript:');
-                if (hasHref) {
-                    setTimeout(() => { window.location.href = href; }, 120);
-                } else {
-                    const clickAction = el.getAttribute('data-onclick');
-                    if (clickAction) {
-                        try { new Function(clickAction).call(el); } catch (e) { console.error(e); }
-                    }
+            const translations = {
+                "Dashboard": {
+                    "hi-IN": "डैशबोर्ड",
+                    "mr-IN": "डॅशबोर्ड",
+                    "kn-IN": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್"
+                },
+                "My Tank": {
+                    "hi-IN": "मेरा टैंक",
+                    "mr-IN": "माझा टँक",
+                    "kn-IN": "ನನ್ನ ಟ್ಯಾಂಕ್"
+                },
+                "Encyclopedia": {
+                    "hi-IN": "विश्वकोश",
+                    "mr-IN": "विश्वकोश",
+                    "kn-IN": "ವಿಶ್ವಕೋಶ"
+                },
+                "Settings": {
+                    "hi-IN": "सेटिंग्स",
+                    "mr-IN": "सेटिंग्ज",
+                    "kn-IN": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
+                },
+                "Logout": {
+                    "hi-IN": "लॉग आउट",
+                    "mr-IN": "लॉग आउट",
+                    "kn-IN": "ಲಾಗ್ ಔಟ್"
                 }
             };
 
-            if (!loadEnabled()) {
-                executeAction();
-                return;
+            function refreshVoices() {
+                availableVoices = window.speechSynthesis.getVoices() || [];
+            }
+            refreshVoices();
+            window.speechSynthesis.onvoiceschanged = refreshVoices;
+
+            function findVoiceForLang(lang) {
+                if (!availableVoices.length) refreshVoices();
+                return availableVoices.find(v => v.lang && v.lang.toLowerCase().startsWith(lang.toLowerCase()))
+                    || availableVoices.find(v => v.lang && v.lang.split('-')[0].toLowerCase() === lang.split('-')[0].toLowerCase());
             }
 
-            speak(speakText, executeAction);
-            setTimeout(executeAction, 2000); // safety fallback
-        }, { passive: false });
-    });
-})();
+            function speak(text, onend) {
+                try {
+                    window.speechSynthesis.cancel();
+                    const lang = loadLang() || 'en-US';
+                    const u = new SpeechSynthesisUtterance(text);
+
+                    if (lang === "hi-IN" || lang === "mr-IN" || lang === "kn-IN") {
+                        const hindiVoice = availableVoices.find(v => v.name === "Lekha" || v.lang === "hi-IN");
+                        if (hindiVoice) {
+                            u.voice = hindiVoice;
+                            u.lang = "hi-IN";
+                        } else {
+                            u.lang = "hi-IN";
+                        }
+                    } else {
+                        const voice = findVoiceForLang(lang);
+                        if (voice) {
+                            u.voice = voice;
+                            u.lang = voice.lang || lang;
+                        } else {
+                            u.lang = lang;
+                        }
+                    }
+
+                    u.volume = 1;
+                    u.rate = 0.95;
+                    u.pitch = 1;
+                    u.onend = () => { if (typeof onend === 'function') onend(); };
+                    window.speechSynthesis.speak(u);
+                } catch (err) {
+                    console.warn('Speech synth error:', err);
+                    if (typeof onend === 'function') onend();
+                }
+            }
+
+            // attach handler: when enabled, speak then navigate
+            document.querySelectorAll('.menu a, .menu [role="button"]').forEach(el => {
+                const inlineClick = el.getAttribute('onclick');
+                if (inlineClick) {
+                    el.setAttribute('data-onclick', inlineClick);
+                    el.removeAttribute('onclick');
+                }
+
+                el.addEventListener('click', function (ev) {
+                    ev.preventDefault();
+                    const label = (el.innerText || el.textContent || el.getAttribute('aria-label') || 'Page').trim();
+                    const lang = loadLang() || 'en-US';
+
+                    let speakText = label === 'Logout' ? label : label + ' page';
+
+                    if (lang !== "en-US" && translations[label]) {
+                        speakText = translations[label][lang] || label;
+                    }
+
+                    let actionDone = false;
+                    const executeAction = () => {
+                        if (actionDone) return;
+                        actionDone = true;
+                        const href = el.getAttribute && el.getAttribute('href');
+                        const hasHref = href && href !== '#' && !href.startsWith('javascript:');
+                        if (hasHref) {
+                            setTimeout(() => { window.location.href = href; }, 120);
+                        } else {
+                            const clickAction = el.getAttribute('data-onclick');
+                            if (clickAction) {
+                                try { new Function(clickAction).call(el); } catch (e) { console.error(e); }
+                            }
+                        }
+                    };
+
+                    if (!loadEnabled()) {
+                        executeAction();
+                        return;
+                    }
+
+                    speak(speakText, executeAction);
+                    setTimeout(executeAction, 2000); // safety fallback
+                }, { passive: false });
+            });
+        })();
     </script>
- </body>
- 
- </html>
+</body>
+
+</html>
