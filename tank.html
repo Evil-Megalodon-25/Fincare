@@ -1340,18 +1340,23 @@ Jeff is typing...
             });
 
             let response;
+
             try {
+                const tankData = JSON.parse(localStorage.getItem("tanks")) || [];
+
                 response = await fetch("https://fincare-backend.onrender.com/chat", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        messages: apiMessages
+                        message: apiMessages?.[apiMessages.length - 1]?.content || "hello",
+                        tank: tankData
                     })
                 });
+
             } catch (err) {
-                console.error(err);
+                console.error("Fetch error:", err);
             }
 
             // remove loading message

@@ -1475,7 +1475,8 @@ Jeff is typing...
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        messages: apiMessages
+                        message: text,
+                        tank: tankData || []
                     })
                 });
             } catch (err) {

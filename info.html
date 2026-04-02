@@ -1005,17 +1005,37 @@ Large eel that hides in rocks and hunts smaller fish.`
                 const res = await fetch('https://fincare-backend.onrender.com/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text })
+                    body: JSON.stringify({
+                        message: text,
+                        tank: JSON.parse(localStorage.getItem("tanks")) || []
+                    })
                 });
+
                 const json = await res.json();
+
                 const loadingEl = document.getElementById(loadingId);
                 if (loadingEl) loadingEl.remove();
-                const reply = (json && (json.reply || json.message)) || 'No reply';
-                messages.insertAdjacentHTML('beforeend', `<div class="bot-msg">${escapeHtml(reply)}</div>`);
+
+                // ✅ safer reply handling
+                const reply =
+                    json?.reply ||
+                    (json?.error ? JSON.stringify(json.error) : null) ||
+                    json?.message ||
+                    "⚠️ No response from AI";
+
+                messages.insertAdjacentHTML(
+                    'beforeend',
+                    `<div class="bot-msg">${escapeHtml(reply)}</div>`
+                );
+
             } catch (err) {
                 const loadingEl = document.getElementById(loadingId);
                 if (loadingEl) loadingEl.remove();
-                messages.insertAdjacentHTML('beforeend', `<div class="bot-msg">Error: ${escapeHtml(err.message || 'Network error')}</div>`);
+
+                messages.insertAdjacentHTML(
+                    'beforeend',
+                    `<div class="bot-msg">Error: ${escapeHtml(err.message || 'Network error')}</div>`
+                );
             }
 
             messages.scrollTop = messages.scrollHeight;
