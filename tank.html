@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fincare - My Tank</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Segoe UI;
+            background: radial-gradient(circle, #0a1f3d, #000);
+            color: white;
+            overflow-x: hidden;
+            padding-top: 70px;
+            --primary: #00f2ff;
+        }
+
+        /* NAVBAR (identical to dashboard) */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 6%;
+            background: linear-gradient(180deg, rgba(28, 53, 86, 0.45), rgba(11, 25, 51, 0.45));
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+
+       .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #00f2ff;
+}
+
+.logo-img {
+    height: 40px;
+    border-radius: 8px;
+}
+
+        .menu a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.menu a:hover {
+    color: #00f2ff;
+}
+
+.menu a.logout {
+    font-weight: 700;
+}
+
+.menu [role="button"] {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 700;
+}
+
+.menu [role="button"]:hover {
+    color: #00f2ff;
+}
+
+        .add-btn {
+            display: block;
+            margin: 30px auto;
+            padding: 12px 28px;
+            background: #5fc0df;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .tank-card {
+            display: flex;
+            align-items: center;
+            padding: 30px;
+            border-radius: 20px;
+            gap: 40px;
+            justify-content: center;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+
+            /* Glass effect */
+            background: rgba(11, 25, 51, 0.45);
+            /* semi-transparent */
+            backdrop-filter: blur(12px);
+            /* blur background */
+            -webkit-backdrop-filter: blur(12px);
+
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            /* subtle border */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.6s ease;
+            /* smaller initial scale for noticeable zoom */
+        }
+
+        #tankContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+            padding: 40px 6%;
+        }
+
+        .tank-card.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .tank-card:hover {
+            transform: scale(1.05);
+            /* slight hover zoom */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .tank-box {
+            position: relative;
+            width: 700px;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 20px;
+            pointer-events: none;
+        }
+
+        .tank-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .fish {
+            position: absolute;
+            width: 70px;
+            z-index: 3;
+        }
+
+        .fish1 {
+            top: 30px;
+            animation: swim1 18s linear infinite;
+        }
+
+        .fish2 {
+            top: 160px;
+            animation: swim2 22s linear infinite;
+        }
+
+        .fish3 {
+            top: 220px;
+            animation: swim3 20s linear infinite;
+        }
+
+        @keyframes swim1 {
+            0% {
+                left: 0;
+                transform: scaleX(1)
+            }
+
+            45% {
+                left: 630px;
+                transform: scaleX(1)
+            }
+
+            50% {
+                left: 630px;
+                transform: scaleX(-1)
+            }
+
+            95% {
+                left: 0;
+                transform: scaleX(-1)
+            }
+
+            100% {
+                left: 0;
+                transform: scaleX(1)
+            }
+        }
+
+        @keyframes swim2 {
+            0% {
+                left: 630px;
+                transform: scaleX(-1)
+            }
+
+            45% {
+                left: 0;
+                transform: scaleX(-1)
+            }
+
+            50% {
+                left: 0;
+                transform: scaleX(1)
+            }
+
+            95% {
+                left: 630px;
+                transform: scaleX(1)
+            }
+
+            100% {
+                left: 630px;
+                transform: scaleX(-1)
+            }
+        }
+
+        @keyframes swim3 {
+            0% {
+                left: 0;
+                transform: scaleX(1)
+            }
+
+            45% {
+                left: 630px;
+                transform: scaleX(1)
+            }
+
+            50% {
+                left: 630px;
+                transform: scaleX(-1)
+            }
+
+            95% {
+                left: 0;
+                transform: scaleX(-1)
+            }
+
+            100% {
+                left: 0;
+                transform: scaleX(1)
+            }
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -20px;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: rise linear infinite;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0);
+                opacity: 1
+            }
+
+            100% {
+                transform: translateY(-420px);
+                opacity: 0
+            }
+        }
+
+        .tank-info {
+            flex: 1
+        }
+
+        .stat {
+            margin: 8px 0
+        }
+
+        .btn {
+            padding: 8px 18px;
+            margin-right: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #5fc0df;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* fish search */
+
+        .fish-search {
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .fish-search input {
+            width: 220px;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+
+        .suggestions {
+            position: absolute;
+            top: 38px;
+            background: #0b1933;
+            border-radius: 8px;
+            width: 220px;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .suggestion {
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+
+        .suggestion:hover {
+            background: #5fc0df;
+            color: black;
+        }
+
+        .fish-manager {
+            margin-top: 15px
+        }
+
+        .fish-search {
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .fish-results {
+            background: #0b1933;
+            border-radius: 6px;
+            max-height: 120px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .fish-option {
+            padding: 6px;
+            cursor: pointer;
+        }
+
+        .fish-option:hover {
+            background: #1c3556;
+        }
+
+        .fish-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .fish-chip {
+            background: #5fc0df;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: black;
+            font-weight: 600;
+        }
+
+        .remove-fish {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .popup {
+
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+
+        }
+
+        .popup-content {
+
+            background: #0b1933;
+            padding: 25px;
+            border-radius: 12px;
+            width: 520px;
+            max-width: 90%;
+            text-align: center;
+
+        }
+
+        .popup-content input {
+
+            width: 90%;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 10px;
+
+        }
+
+        .popup-content label {
+
+            display: block;
+            margin: 5px 0;
+
+        }
+
+        .radio-group {
+            width: 300px;
+            margin: 15px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+
+        .radio-option input {
+            transform: scale(1.2);
+            margin: 0;
+        }
+
+        .radio-option span {
+            text-align: left;
+        }
+
+        h3 {
+            margin-top: 25px;
+        }
+
+        .ai-chatbot {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 9999;
+        }
+
+        /* Floating Button */
+
+        .ai-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            cursor: pointer;
+        }
+
+        .ai-button img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            animation: floatAI 3s ease-in-out infinite;
+        }
+
+        @keyframes floatAI {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .ai-button img:hover {
+            transform: scale(1.1);
+            transition: 0.3s;
+        }
+
+        /* Chat Window */
+
+        .ai-chat-window {
+
+            width: 320px;
+            height: 420px;
+
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+
+            display: none;
+            flex-direction: column;
+
+            border-radius: 18px;
+
+            background: rgba(10, 25, 45, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            border: 1px solid rgba(255, 255, 255, 0.18);
+
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.55);
+        }
+
+        /* Header */
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 10px 14px;
+
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .ai-header img {
+            width: 28px;
+        }
+
+        .ai-header span {
+            flex: 1;
+            margin-left: 8px;
+        }
+
+        .ai-header button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Messages */
+
+        .ai-messages {
+
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        /* Message bubbles */
+
+        .user-msg {
+            background: var(--primary);
+            color: black;
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin: 6px 0;
+            align-self: flex-end;
+            width: fit-content;
+        }
+
+        .bot-msg {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin: 6px 0;
+            width: fit-content;
+        }
+
+        /* Input */
+
+        .ai-input {
+            display: flex;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .ai-input input {
+
+            flex: 1;
+            padding: 10px;
+
+            background: none;
+            border: none;
+            color: white;
+        }
+
+        .ai-input input:focus {
+            outline: none;
+        }
+
+        .ai-input button {
+
+            width: 45px;
+            border: none;
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            font-weight: 600;
+        }
+
+        .ai-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 6px rgba(77, 208, 225, 0.8));
+        }
+
+        #userInput:focus {
+            outline: none;
+            box-shadow: 0 0 6px rgba(0, 200, 255, 0.6);
+        }
+
+        .ai-popup {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            background: #0a1a2a;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            max-width: 220px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            display: none;
+        }
+
+        .ai-popup::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            right: 20px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: #0a1a2a transparent transparent transparent;
+        }
+
+        .typing-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin: 6px 0;
+            width: fit-content;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            animation: typing 1.2s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateY(-4px);
+            }
+
+            100% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+        }
+
+        .zoom-scroll {
+            opacity: 0;
+            transform: scale(0.85);
+            transition: all 0.6s ease;
+        }
+
+        .zoom-scroll.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        #tankContainer {
+            display: flex;
+            flex-direction: column;
+            /* stack tanks vertically */
+            gap: 60px;
+            /* space between tanks */
+            padding: 20px 6%;
+        }
+
+        .qty-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* ➕ button */
+        .qty-btn.plus {
+            background: rgba(11, 25, 51, 0.45);
+            /* green */
+            color: white;
+        }
+
+        .qty-btn.plus:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* ➖ button */
+        .qty-btn.minus {
+            background: rgba(11, 25, 51, 0.45);
+            /* red */
+            color: white;
+        }
+
+        .qty-btn.minus:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .suggestions {
+            position: absolute;
+            background: #0f2a44;
+            width: 100%;
+            z-index: 999;
+            border-radius: 6px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .suggestion-item {
+            padding: 8px;
+            cursor: pointer;
+            background: #0f2a44;
+            color: white;
+        }
+
+        .suggestion-item:hover {
+            background: #1e4d7a;
+        }
+
+        .fish-search {
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <!-- left: logo + voice controls -->
+        <div style="display:flex; align-items:center; gap:18px;">
+            <div class="logo">
+                <img src="fincare.png" class="logo-img">
+                <span>Fincare</span>
+            </div>
+
+            <!-- Voice controls: toggle + language select -->
+            <div class="voice-controls" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
+                <label style="display:flex;align-items:center;gap:8px;color:white;font-size:14px;cursor:pointer;">
+                    <input id="voiceToggle" type="checkbox" aria-label="Enable voice over" />
+                    <span style="opacity:0.95">Voice</span>
+                </label>
+                <select id="voiceLang" aria-label="Voice language" style="background:rgba(255,255,255,0.06);color:white;border-radius:8px;padding:6px;font-size:13px;border:1px solid rgba(255,255,255,0.08);">
+                    <option value="en-US">English</option>
+                    <option value="hi-IN">Hindi</option>
+                    <option value="mr-IN">Marathi</option>
+                    <option value="kn-IN">Kannada</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- right: menu -->
+        <div class="menu" style="margin-left:auto;">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="tank.html">My Tank</a>
+            <a href="info.html">Encyclopedia</a>
+            <a href="settings.html">Settings</a>
+            <a onclick="logout()" role="button">Logout</a>
+        </div>
+    </nav>
+
+    <button class="add-btn" onclick="addTank()">+ Add Tank</button>
+
+    <div id="tankPopup" class="popup">
+
+        <div class="popup-content">
+
+            <h2>Add New Tank</h2>
+
+            <input id="tankName" placeholder="Tank Name">
+
+            <h3>Tank Size</h3>
+
+            <div class="radio-group">
+
+                <label class="radio-option">
+                    <input type="radio" name="size" value="Small">
+                    <span>Small (10–20 Litres)</span>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="size" value="Medium">
+                    <span>Medium (20–50 Litres)</span>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="size" value="Large">
+                    <span>Large (50+ Litres)</span>
+                </label>
+
+            </div>
+
+            <h3>Water Type</h3>
+
+            <div class="radio-group">
+
+                <label class="radio-option">
+                    <input type="radio" name="water" value="Freshwater">
+                    <span>Freshwater</span>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="water" value="Saltwater">
+                    <span>Saltwater</span>
+                </label>
+
+            </div>
+
+            <br><br>
+
+            <button class="btn" onclick="createTank()">Create</button>
+            <button class="btn" onclick="closePopup()">Cancel</button>
+
+        </div>
+
+    </div>
+
+    <div id="tankContainer"></div>
+
+    <script>
+
+        const theme = localStorage.getItem("theme");
+
+        if (theme === "light") {
+            document.body.style.background = "#f2f2f2";
+            document.body.style.color = "black";
+        }
+
+        /* STORAGE */
+
+        let tanks = JSON.parse(localStorage.getItem("tanks") || "[]");
+
+        console.log("TANK DATA:", tanks);
+
+        if (!Array.isArray(tanks)) {
+            tanks = [];
+        }
+
+        if (tanks.length === 0) {
+            tanks = [{
+                name: "My First Tank",
+                size: "Medium",
+                water: "Freshwater",
+                fish: []
+            }];
+
+            localStorage.setItem("tanks", JSON.stringify(tanks));
+        }
+
+
+
+        /* FISH DATABASE */
+
+        const fishDB = [
+
+            /* ---------- FRESHWATER PRIMARY ---------- */
+
+            { name: "Guppy", type: "Freshwater", level: "Primary", feed: 1, tempMin: 22, tempMax: 28, img: "fish3.jpg" },
+            { name: "Neon Tetra", type: "Freshwater", level: "Primary", feed: 1, tempMin: 20, tempMax: 26, img: "fish4.jpg" },
+            { name: "Goldfish", type: "Freshwater", level: "Primary", feed: 2, tempMin: 18, tempMax: 24, img: "fish1.jpg" },
+            { name: "Platy", type: "Freshwater", level: "Primary", feed: 1, tempMin: 22, tempMax: 26, img: "fish15.jpeg" },
+            { name: "Molly", type: "Freshwater", level: "Primary", feed: 1, tempMin: 24, tempMax: 28, img: "fish6.jpg" },
+
+            /* ---------- FRESHWATER SECONDARY ---------- */
+
+            { name: "Betta", type: "Freshwater", level: "Secondary", feed: 2, tempMin: 24, tempMax: 30, img: "fish2.jpg" },
+            { name: "Angelfish", type: "Freshwater", level: "Secondary", feed: 2, tempMin: 24, tempMax: 30, img: "fish5.jpg" },
+            { name: "Gourami", type: "Freshwater", level: "Secondary", feed: 2, tempMin: 24, tempMax: 28, img: "fish16.jpeg" },
+
+            /* ---------- FRESHWATER TOP ---------- */
+
+            { name: "Oscar", type: "Freshwater", level: "Top", feed: 3, tempMin: 24, tempMax: 28, img: "fish17.jpeg" },
+            { name: "Arowana", type: "Freshwater", level: "Top", feed: 4, tempMin: 24, tempMax: 30, img: "fish18.jpeg" },
+
+            /* ---------- SALTWATER PRIMARY ---------- */
+
+            { name: "Clownfish", type: "Saltwater", level: "Primary", feed: 1, tempMin: 24, tempMax: 27, img: "fish11.jpeg" },
+            { name: "Blue Green Chromis", type: "Saltwater", level: "Primary", feed: 1, tempMin: 24, tempMax: 27, img: "fish19.jpeg" },
+
+            /* ---------- SALTWATER SECONDARY ---------- */
+
+            { name: "Royal Gramma", type: "Saltwater", level: "Secondary", feed: 2, tempMin: 24, tempMax: 28, img: "fish13.jpeg" },
+            { name: "Blue Tang", type: "Saltwater", level: "Secondary", feed: 2, tempMin: 24, tempMax: 28, img: "fish12.jpeg" },
+
+            /* ---------- SALTWATER TOP ---------- */
+
+            { name: "Lionfish", type: "Saltwater", level: "Top", feed: 3, tempMin: 24, tempMax: 27, img: "fish20.jpeg" },
+            { name: "Moray Eel", type: "Saltwater", level: "Top", feed: 4, tempMin: 24, tempMax: 28, img: "fish21.jpeg" }
+
+        ]
+
+        function calculateTempRange(fishes) {
+
+            if (fishes.length === 0) return "22-26°C"
+
+            let minTemps = fishes.map(f => f.tempMin)
+            let maxTemps = fishes.map(f => f.tempMax)
+
+            let min = Math.max(...minTemps)
+            let max = Math.min(...maxTemps)
+
+            if (min > max) {
+                return "⚠ Temperature conflict"
+            }
+
+            return min + "-" + max + "°C"
+
+        }
+
+
+
+        function renderTanks() {
+            const container = document.getElementById("tankContainer");
+            container.innerHTML = "";
+
+            tanks.forEach((tank, index) => {
+                if (!tank.fish) tank.fish = [];
+
+                let food = 0;
+                tank.fish.forEach(f => food += f.feed * (f.count || 1));
+                let tempRange = calculateTempRange(tank.fish);
+
+                const div = document.createElement("div");
+                div.className = "tank-card zoom-scroll"; // animation + glass effect handled via CSS
+
+                div.innerHTML = `
+<div class="tank-box ">
+    <img src="tank.jpg" class="tank-image">
+    <img src="fish8.png" class="fish fish1">
+    <img src="fish9.png" class="fish fish2">
+    <img src="fish10.png" class="fish fish3">
+</div>
+
+<div class="tank-info">
+    <h2>${tank.name} (${tank.size})</h2>
+    <div class="stat">🌡 Required Temp: ${tempRange}</div>
+    <div class="stat">🌊 Water Type: ${tank.water}</div>
+    <div class="stat">🐟 Fish Count: ${tank.fish.reduce((sum, f) => sum + (f.count || 1), 0)}</div>
+    <div class="stat">🍽 Feeding Amount: ${food} g</div>
+
+    <br>
+
+    <div class="fish-search" style="margin-bottom: 16px;">
+    <input 
+        type="text" 
+        placeholder="Search fish..."
+        onkeyup="searchFish(this, ${index})"
+    >
+    <div class="suggestions"></div>
+</div>
+
+    <div class="fish-list" id="fishList-${index}" style="margin-bottom: 20px;"></div>
+
+    <div style="display:flex; gap:12px;">
+        <button class="btn" onclick="renameTank(${index})">Rename</button>
+        <button class="btn" onclick="deleteTank(${index})">Delete</button>
+    </div>
+</div>
+        `;
+
+                container.appendChild(div);
+
+                // Observe for animation
+                observer.observe(div);
+
+                renderFishList(index);
+                createBubbles(div.querySelector(".tank-box"));
+            });
+        }
+
+        function renderFishList(tankIndex) {
+
+            const tank = tanks[tankIndex]
+            const list = document.getElementById("fishList-" + tankIndex)
+
+            if (!list) return
+
+            list.innerHTML = ""
+
+            tank.fish.forEach((fish, i) => {
+
+                const chip = document.createElement("div")
+                chip.className = "fish-chip"
+
+                chip.innerHTML = `
+            <img src="${fish.img || 'fish.png'}" style="width:20px;height:20px;border-radius:50%">
+
+${fish.name}
+
+<button class="qty-btn minus" onclick="decreaseFish(${tankIndex}, ${i})">−</button>
+<span>${fish.count || 1}</span>
+<button class="qty-btn plus" onclick="increaseFish(${tankIndex}, ${i})">+</button>
+        `
+
+                list.appendChild(chip)
+            })
+        }
+
+        /* ADD FISH (Legacy removed - handled by addFishToTank) */
+        /* ADD TANK */
+
+        function addTank() {
+
+            document.getElementById("tankPopup").style.display = "flex"
+
+        }
+
+        function createTank() {
+
+            let name = document.getElementById("tankName").value
+
+            let size = document.querySelector('input[name="size"]:checked')
+            let water = document.querySelector('input[name="water"]:checked')
+
+            if (!name || !size || !water) {
+
+                alert("Please fill all fields")
+                return
+
+            }
+
+            tanks.push({
+
+                name: name,
+                size: size.value,
+                water: water.value,
+                fish: []
+
+            })
+
+            save()
+            renderTanks()
+            closePopup()
+
+        }
+
+        function closePopup() {
+
+            document.getElementById("tankPopup").style.display = "none"
+
+        }
+
+        /* DELETE */
+
+        function deleteTank(i) {
+
+            tanks.splice(i, 1)
+            save()
+            renderTanks()
+
+        }
+
+        function removeFish(tankIndex, fishIndex) {
+
+            tanks[tankIndex].fish.splice(fishIndex, 1)
+
+            save()
+
+            renderTanks()
+
+        }
+
+        /* RENAME */
+
+        function renameTank(i) {
+
+            let newName = prompt("New Name")
+
+            if (newName) {
+                tanks[i].name = newName
+                save()
+                renderTanks()
+            }
+
+        }
+
+        /* SAVE */
+
+        function save() {
+            localStorage.setItem("tanks", JSON.stringify(tanks))
+        }
+
+        /* BUBBLES */
+
+        function createBubbles(tank) {
+
+            for (let i = 0; i < 12; i++) {
+
+                let bubble = document.createElement("div")
+
+                bubble.className = "bubble"
+
+                bubble.style.left = Math.random() * 680 + "px"
+
+                bubble.style.animationDuration = (4 + Math.random() * 6) + "s"
+
+                tank.appendChild(bubble)
+
+            }
+
+        }
+
+        function addFishToTank(tankIndex, fish) {
+            const tank = tanks[tankIndex];
+
+            // 1. Water Type Compatibility
+            if (tank.water && fish.type !== tank.water) {
+                alert(`Cannot add ${fish.type} fish to ${tank.water} tank`);
+                return;
+            }
+
+            // 2. Fish Categories Rule (Only ONE category allowed)
+            let existingLevel = tank.fish.length > 0 ? tank.fish[0].level : null;
+            if (existingLevel && fish.level !== existingLevel) {
+                alert(`❌ This tank already has ${existingLevel} fish. Cannot add ${fish.level}.`);
+                return;
+            }
+
+            // 3. Overcrowding Rule (Max 10 fish)
+            let totalCount = tank.fish.reduce((sum, f) => sum + (f.count || 1), 0);
+            if (totalCount >= 10) {
+                alert("Tank overcrowded");
+                return;
+            }
+
+            // 4. Betta Fish Rule
+            let existingBetta = tank.fish.find(f => f.name.toLowerCase() === "betta");
+            if (fish.name.toLowerCase() === "betta" && existingBetta) {
+                alert("Only one Betta allowed in a tank");
+                return;
+            }
+
+            // 5. Adding Fish Behavior (increment if exists, else add with count 1)
+            let existing = tank.fish.find(f => f.name === fish.name);
+
+            if (existing) {
+                existing.count = (existing.count || 1) + 1;
+            } else {
+                // STORE FULL DATA
+                tank.fish.push({
+                    name: fish.name,
+                    img: fish.img,
+                    type: fish.type,
+                    level: fish.level,
+                    tempMin: fish.tempMin,
+                    tempMax: fish.tempMax,
+                    feed: fish.feed,
+                    count: 1
+                });
+            }
+
+            // CLEAR DROPDOWN
+            document.querySelectorAll(".suggestions").forEach(s => s.innerHTML = "");
+
+            save();
+            updateFishUI(tankIndex);
+        }
+
+        /* SEARCH FISH WITH LIVE SUGGESTIONS */
+
+        function searchFish(input, tankIndex) {
+            let value = input.value.toLowerCase();
+
+            const suggestions = input.nextElementSibling;
+
+            if (!value) {
+                suggestions.innerHTML = "";
+                return;
+            }
+
+            let filtered = fishDB.filter(f =>
+                f.name.toLowerCase().includes(value)
+            );
+
+            suggestions.innerHTML = filtered.map(fish => `
+        <div class="suggestion-item"
+             onclick='addFishToTank(${tankIndex}, ${JSON.stringify(fish)})'>
+            ${fish.name} (${fish.level})
+        </div>
+    `).join("");
+
+            if (value.length === 0) return
+
+            const tank = tanks[tankIndex]
+
+            fishDB.forEach(fish => {
+
+                if (fish.name.toLowerCase().includes(query)) {
+
+                    const div = document.createElement("div")
+
+                    div.className = "suggestion"
+
+                    div.innerText = fish.name + " (" + fish.level + ")"
+
+                    div.onclick = () => {
+
+                        addFishToTank(tankIndex, fish)
+
+                        input.value = ""
+                        suggestionsBox.innerHTML = ""
+
+                    }
+
+                    suggestionsBox.appendChild(div)
+
+                }
+
+            })
+
+        }
+
+        /* START */
+
+        window.onload = function () {
+            renderTanks();
+        };
+
+        localStorage.setItem("tankData", JSON.stringify({
+            size: "20 gallons",
+            fish: "Guppy, Neon Tetra",
+            temperature: "25°C",
+            ph: "7.0"
+        }))
+
+        function toggleChat() {
+
+            let chat = document.getElementById("chatWindow")
+
+            if (chat.style.display === "flex") {
+                chat.style.display = "none"
+            } else {
+                chat.style.display = "flex"
+            }
+        }
+
+        async function sendMessage() {
+
+            let input = document.getElementById("userInput")
+            let text = input.value.trim()
+
+            if (!text) return
+
+            const messages = document.getElementById("chatMessages")
+
+            messages.innerHTML += `<div class="user-msg">${text}</div>`
+
+            input.value = ""
+
+            // get tank data
+            const tankData = JSON.parse(localStorage.getItem("tanks")) || []
+
+            // show loading
+            messages.innerHTML += `
+<div class="typing-box" id="loading">
+Jeff is typing...
+<div class="typing-dots">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</div>
+`
+
+            const response = await fetch("http://127.0.0.1:8000/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: text,
+                    tank: tankData
+                })
+            })
+
+            // remove loading message
+            const loading = document.getElementById("loading")
+            if (loading) loading.remove()
+
+            const data = await response.json()
+
+            console.log(data)
+
+            messages.innerHTML += `<div class="bot-msg">${data.reply}</div>`
+
+            messages.scrollTop = messages.scrollHeight
+            input.focus()
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const inputField = document.getElementById("userInput");
+
+            if (inputField) {
+                inputField.focus();
+            }
+
+            inputField.addEventListener("keydown", function (event) {
+
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    sendMessage();
+                }
+
+            });
+
+        });
+
+        window.addEventListener("load", function () {
+
+            setTimeout(function () {
+
+                const popup = document.getElementById("aiPopup");
+
+                if (popup) {
+
+                    popup.style.display = "block";
+
+                    setTimeout(() => {
+                        popup.style.display = "none";
+                    }, 5000);
+
+                }
+
+            }, 10000);
+
+        });
+
+        function closeAIPopup() {
+            const popup = document.getElementById("aiPopup")
+            if (popup) {
+                popup.style.display = "none"
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("fincareUser");
+            window.location.href = "index.html";
+        }
+
+        function increaseFish(tankIndex, fishIndex) {
+            tanks[tankIndex].fish[fishIndex].count =
+                (tanks[tankIndex].fish[fishIndex].count || 1) + 1;
+
+            save();
+            updateFishUI(tankIndex);
+        }
+
+        function decreaseFish(tankIndex, fishIndex) {
+            let fish = tanks[tankIndex].fish[fishIndex];
+
+            if ((fish.count || 1) > 1) {
+                fish.count--;
+            } else {
+                tanks[tankIndex].fish.splice(fishIndex, 1);
+            }
+
+            save();
+            updateFishUI(tankIndex);
+        }
+
+        function updateFishUI(tankIndex) {
+            const tank = tanks[tankIndex];
+
+            // Update fish list only
+            renderFishList(tankIndex);
+
+            // Update fish count
+            const countEl = document.querySelectorAll(".tank-card")[tankIndex]
+                .querySelector(".stat:nth-child(4)");
+
+            const totalFish = tank.fish.reduce((sum, f) => sum + (f.count || 1), 0);
+            countEl.innerHTML = `🐟 Fish Count: ${totalFish}`;
+
+            // Update food
+            let food = 0;
+            tank.fish.forEach(f => food += f.feed * (f.count || 1));
+
+            const foodEl = document.querySelectorAll(".tank-card")[tankIndex]
+                .querySelector(".stat:nth-child(5)");
+
+            foodEl.innerHTML = `🍽 Feeding Amount: ${food} g`;
+        }
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("show");
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll(".zoom-scroll").forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+
+    <div class="ai-chatbot">
+
+        <!-- Floating Button -->
+        <div class="ai-button" onclick="toggleChat(); closeAIPopup();">
+            <img src="ai-bot.png" alt="AI">
+        </div>
+
+        <div class="ai-popup" id="aiPopup">
+            Hi, I'm Jeff 👋 your aquarium AI assistant. Ask me anything!
+        </div>
+        </div>
+
+        <!-- Chat Window -->
+        <div class="ai-chat-window" id="chatWindow">
+
+            <div class="ai-header">
+
+                <div class="ai-title">
+                    <img src="ai-bot.png" class="ai-logo">
+                    <span>Fincare AI</span>
+                </div>
+
+                <button onclick="toggleChat()">✕</button>
+
+            </div>
+
+            <div class="ai-messages" id="chatMessages"></div>
+
+            <div class="ai-input">
+                <input type="text" id="userInput" placeholder="Ask about your aquarium...">
+                <button onclick="sendMessage()">➤</button>
+            </div>
+
+        </div>
+
+    </div>
+    
+    <script>
+/* Voice-over for navbar clicks with voice selection fallback to voices list */
+(function () {
+    if (!('speechSynthesis' in window)) return;
+
+    const STORE_ENABLED = 'voiceEnabled';
+    const STORE_LANG = 'voiceLang';
+    const toggleEl = document.getElementById('voiceToggle');
+    const langEl = document.getElementById('voiceLang');
+
+    function loadEnabled() { return localStorage.getItem(STORE_ENABLED) === '1'; }
+    function loadLang() { return localStorage.getItem(STORE_LANG) || 'en-US'; }
+    function saveEnabled(v) { localStorage.setItem(STORE_ENABLED, v ? '1' : '0'); }
+    function saveLang(v) { localStorage.setItem(STORE_LANG, v); }
+
+    if (toggleEl) toggleEl.checked = loadEnabled();
+    if (langEl) langEl.value = loadLang();
+    if (toggleEl) toggleEl.addEventListener('change', () => saveEnabled(toggleEl.checked));
+    if (langEl) langEl.addEventListener('change', () => saveLang(langEl.value));
+
+    // manage available voices
+    let availableVoices = [];
+
+    const translations = {
+    "Dashboard": {
+        "hi-IN": "डैशबोर्ड",
+        "mr-IN": "डॅशबोर्ड",
+        "kn-IN": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್"
+    },
+    "My Tank": {
+        "hi-IN": "मेरा टैंक",
+        "mr-IN": "माझा टँक",
+        "kn-IN": "ನನ್ನ ಟ್ಯಾಂಕ್"
+    },
+    "Encyclopedia": {
+        "hi-IN": "विश्वकोश",
+        "mr-IN": "विश्वकोश",
+        "kn-IN": "ವಿಶ್ವಕೋಶ"
+    },
+    "Settings": {
+        "hi-IN": "सेटिंग्स",
+        "mr-IN": "सेटिंग्ज",
+        "kn-IN": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
+    },
+    "Logout": {
+        "hi-IN": "लॉग आउट",
+        "mr-IN": "लॉग आउट",
+        "kn-IN": "ಲಾಗ್ ಔಟ್"
+    }
+};
+
+    function refreshVoices() {
+        availableVoices = window.speechSynthesis.getVoices() || [];
+    }
+    refreshVoices();
+    window.speechSynthesis.onvoiceschanged = refreshVoices;
+
+    function findVoiceForLang(lang) {
+        if (!availableVoices.length) refreshVoices();
+        return availableVoices.find(v => v.lang && v.lang.toLowerCase().startsWith(lang.toLowerCase()))
+            || availableVoices.find(v => v.lang && v.lang.split('-')[0].toLowerCase() === lang.split('-')[0].toLowerCase());
+    }
+
+    function speak(text, onend) {
+        try {
+            window.speechSynthesis.cancel();
+            const lang = loadLang() || 'en-US';
+            const u = new SpeechSynthesisUtterance(text);
+
+            if (lang === "hi-IN" || lang === "mr-IN" || lang === "kn-IN") {
+                const hindiVoice = availableVoices.find(v => v.name === "Lekha" || v.lang === "hi-IN");
+                if (hindiVoice) {
+                    u.voice = hindiVoice;
+                    u.lang = "hi-IN";
+                } else {
+                    u.lang = "hi-IN";
+                }
+            } else {
+                const voice = findVoiceForLang(lang);
+                if (voice) {
+                    u.voice = voice;
+                    u.lang = voice.lang || lang;
+                } else {
+                    u.lang = lang;
+                }
+            }
+
+            u.volume = 1;
+            u.rate = 0.95;
+            u.pitch = 1;
+            u.onend = () => { if (typeof onend === 'function') onend(); };
+            window.speechSynthesis.speak(u);
+        } catch (err) {
+            console.warn('Speech synth error:', err);
+            if (typeof onend === 'function') onend();
+        }
+    }
+
+    // attach handler: when enabled, speak then navigate
+    document.querySelectorAll('.menu a, .menu [role="button"]').forEach(el => {
+        const inlineClick = el.getAttribute('onclick');
+        if (inlineClick) {
+            el.setAttribute('data-onclick', inlineClick);
+            el.removeAttribute('onclick');
+        }
+
+        el.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            const label = (el.innerText || el.textContent || el.getAttribute('aria-label') || 'Page').trim();
+            const lang = loadLang() || 'en-US';
+
+            let speakText = label === 'Logout' ? label : label + ' page';
+
+            if (lang !== "en-US" && translations[label]) {
+                speakText = translations[label][lang] || label;
+            }
+
+            let actionDone = false;
+            const executeAction = () => {
+                if (actionDone) return;
+                actionDone = true;
+                const href = el.getAttribute && el.getAttribute('href');
+                const hasHref = href && href !== '#' && !href.startsWith('javascript:');
+                if (hasHref) {
+                    setTimeout(() => { window.location.href = href; }, 120);
+                } else {
+                    const clickAction = el.getAttribute('data-onclick');
+                    if (clickAction) {
+                        try { new Function(clickAction).call(el); } catch (e) { console.error(e); }
+                    }
+                }
+            };
+
+            if (!loadEnabled()) {
+                executeAction();
+                return;
+            }
+
+            speak(speakText, executeAction);
+            setTimeout(executeAction, 2000); // safety fallback
+        }, { passive: false });
+    });
+})();
+    </script>
+</body>
+
+</html>
