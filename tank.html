@@ -1341,7 +1341,21 @@ Jeff is typing...
 
             console.log(data)
 
-            messages.innerHTML += `<div class="bot-msg">${data.reply}</div>`
+            if (data.reply) {
+                messages.innerHTML += `<div class="bot-msg">${data.reply}</div>`
+            } else {
+                let errorMsg = "Sorry, I am facing an issue. Please try again later.";
+                if (data.error) {
+                    if (typeof data.error === "string") {
+                        errorMsg = "Error: " + data.error;
+                    } else if (data.error.error && data.error.error.message) {
+                        errorMsg = data.error.error.message;
+                    } else if (data.error.message) {
+                        errorMsg = data.error.message;
+                    }
+                }
+                messages.innerHTML += `<div class="bot-msg" style="color: #ffaa99;">${errorMsg}</div>`
+            }
 
             messages.scrollTop = messages.scrollHeight
             input.focus()
