@@ -35,48 +35,48 @@
             z-index: 1000;
         }
 
-       .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 22px;
-    font-weight: bold;
-    color: #00f2ff;
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #00f2ff;
+        }
 
-.logo-img {
-    height: 40px;
-    border-radius: 8px;
-}
+        .logo-img {
+            height: 40px;
+            border-radius: 8px;
+        }
 
         .menu a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: 0.3s;
-}
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-.menu a:hover {
-    color: #00f2ff;
-}
+        .menu a:hover {
+            color: #00f2ff;
+        }
 
-.menu a.logout {
-    font-weight: 700;
-}
+        .menu a.logout {
+            font-weight: 700;
+        }
 
-.menu [role="button"] {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: 0.3s;
-    font-weight: 700;
-}
+        .menu [role="button"] {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 700;
+        }
 
-.menu [role="button"]:hover {
-    color: #00f2ff;
-}
+        .menu [role="button"]:hover {
+            color: #00f2ff;
+        }
 
         .add-btn {
             display: block;
@@ -799,7 +799,8 @@
                     <input id="voiceToggle" type="checkbox" aria-label="Enable voice over" />
                     <span style="opacity:0.95">Voice</span>
                 </label>
-                <select id="voiceLang" aria-label="Voice language" style="background:rgba(255,255,255,0.06);color:white;border-radius:8px;padding:6px;font-size:13px;border:1px solid rgba(255,255,255,0.08);">
+                <select id="voiceLang" aria-label="Voice language"
+                    style="background:rgba(255,255,255,0.06);color:white;border-radius:8px;padding:6px;font-size:13px;border:1px solid rgba(255,255,255,0.08);">
                     <option value="en-US">English</option>
                     <option value="hi-IN">Hindi</option>
                     <option value="mr-IN">Marathi</option>
@@ -1321,7 +1322,7 @@ Jeff is typing...
 </div>
 `
 
-            const response = await fetch("http://127.0.0.1:8000/chat", {
+            const response = await fetch("https://fincare-backend.onrender.com/chat", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -1464,176 +1465,176 @@ Jeff is typing...
         <div class="ai-popup" id="aiPopup">
             Hi, I'm Jeff 👋 your aquarium AI assistant. Ask me anything!
         </div>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="ai-chat-window" id="chatWindow">
+
+        <div class="ai-header">
+
+            <div class="ai-title">
+                <img src="ai-bot.png" class="ai-logo">
+                <span>Fincare AI</span>
+            </div>
+
+            <button onclick="toggleChat()">✕</button>
+
         </div>
 
-        <!-- Chat Window -->
-        <div class="ai-chat-window" id="chatWindow">
+        <div class="ai-messages" id="chatMessages"></div>
 
-            <div class="ai-header">
-
-                <div class="ai-title">
-                    <img src="ai-bot.png" class="ai-logo">
-                    <span>Fincare AI</span>
-                </div>
-
-                <button onclick="toggleChat()">✕</button>
-
-            </div>
-
-            <div class="ai-messages" id="chatMessages"></div>
-
-            <div class="ai-input">
-                <input type="text" id="userInput" placeholder="Ask about your aquarium...">
-                <button onclick="sendMessage()">➤</button>
-            </div>
-
+        <div class="ai-input">
+            <input type="text" id="userInput" placeholder="Ask about your aquarium...">
+            <button onclick="sendMessage()">➤</button>
         </div>
 
     </div>
-    
+
+    </div>
+
     <script>
-/* Voice-over for navbar clicks with voice selection fallback to voices list */
-(function () {
-    if (!('speechSynthesis' in window)) return;
+        /* Voice-over for navbar clicks with voice selection fallback to voices list */
+        (function () {
+            if (!('speechSynthesis' in window)) return;
 
-    const STORE_ENABLED = 'voiceEnabled';
-    const STORE_LANG = 'voiceLang';
-    const toggleEl = document.getElementById('voiceToggle');
-    const langEl = document.getElementById('voiceLang');
+            const STORE_ENABLED = 'voiceEnabled';
+            const STORE_LANG = 'voiceLang';
+            const toggleEl = document.getElementById('voiceToggle');
+            const langEl = document.getElementById('voiceLang');
 
-    function loadEnabled() { return localStorage.getItem(STORE_ENABLED) === '1'; }
-    function loadLang() { return localStorage.getItem(STORE_LANG) || 'en-US'; }
-    function saveEnabled(v) { localStorage.setItem(STORE_ENABLED, v ? '1' : '0'); }
-    function saveLang(v) { localStorage.setItem(STORE_LANG, v); }
+            function loadEnabled() { return localStorage.getItem(STORE_ENABLED) === '1'; }
+            function loadLang() { return localStorage.getItem(STORE_LANG) || 'en-US'; }
+            function saveEnabled(v) { localStorage.setItem(STORE_ENABLED, v ? '1' : '0'); }
+            function saveLang(v) { localStorage.setItem(STORE_LANG, v); }
 
-    if (toggleEl) toggleEl.checked = loadEnabled();
-    if (langEl) langEl.value = loadLang();
-    if (toggleEl) toggleEl.addEventListener('change', () => saveEnabled(toggleEl.checked));
-    if (langEl) langEl.addEventListener('change', () => saveLang(langEl.value));
+            if (toggleEl) toggleEl.checked = loadEnabled();
+            if (langEl) langEl.value = loadLang();
+            if (toggleEl) toggleEl.addEventListener('change', () => saveEnabled(toggleEl.checked));
+            if (langEl) langEl.addEventListener('change', () => saveLang(langEl.value));
 
-    // manage available voices
-    let availableVoices = [];
+            // manage available voices
+            let availableVoices = [];
 
-    const translations = {
-    "Dashboard": {
-        "hi-IN": "डैशबोर्ड",
-        "mr-IN": "डॅशबोर्ड",
-        "kn-IN": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್"
-    },
-    "My Tank": {
-        "hi-IN": "मेरा टैंक",
-        "mr-IN": "माझा टँक",
-        "kn-IN": "ನನ್ನ ಟ್ಯಾಂಕ್"
-    },
-    "Encyclopedia": {
-        "hi-IN": "विश्वकोश",
-        "mr-IN": "विश्वकोश",
-        "kn-IN": "ವಿಶ್ವಕೋಶ"
-    },
-    "Settings": {
-        "hi-IN": "सेटिंग्स",
-        "mr-IN": "सेटिंग्ज",
-        "kn-IN": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
-    },
-    "Logout": {
-        "hi-IN": "लॉग आउट",
-        "mr-IN": "लॉग आउट",
-        "kn-IN": "ಲಾಗ್ ಔಟ್"
-    }
-};
-
-    function refreshVoices() {
-        availableVoices = window.speechSynthesis.getVoices() || [];
-    }
-    refreshVoices();
-    window.speechSynthesis.onvoiceschanged = refreshVoices;
-
-    function findVoiceForLang(lang) {
-        if (!availableVoices.length) refreshVoices();
-        return availableVoices.find(v => v.lang && v.lang.toLowerCase().startsWith(lang.toLowerCase()))
-            || availableVoices.find(v => v.lang && v.lang.split('-')[0].toLowerCase() === lang.split('-')[0].toLowerCase());
-    }
-
-    function speak(text, onend) {
-        try {
-            window.speechSynthesis.cancel();
-            const lang = loadLang() || 'en-US';
-            const u = new SpeechSynthesisUtterance(text);
-
-            if (lang === "hi-IN" || lang === "mr-IN" || lang === "kn-IN") {
-                const hindiVoice = availableVoices.find(v => v.name === "Lekha" || v.lang === "hi-IN");
-                if (hindiVoice) {
-                    u.voice = hindiVoice;
-                    u.lang = "hi-IN";
-                } else {
-                    u.lang = "hi-IN";
-                }
-            } else {
-                const voice = findVoiceForLang(lang);
-                if (voice) {
-                    u.voice = voice;
-                    u.lang = voice.lang || lang;
-                } else {
-                    u.lang = lang;
-                }
-            }
-
-            u.volume = 1;
-            u.rate = 0.95;
-            u.pitch = 1;
-            u.onend = () => { if (typeof onend === 'function') onend(); };
-            window.speechSynthesis.speak(u);
-        } catch (err) {
-            console.warn('Speech synth error:', err);
-            if (typeof onend === 'function') onend();
-        }
-    }
-
-    // attach handler: when enabled, speak then navigate
-    document.querySelectorAll('.menu a, .menu [role="button"]').forEach(el => {
-        const inlineClick = el.getAttribute('onclick');
-        if (inlineClick) {
-            el.setAttribute('data-onclick', inlineClick);
-            el.removeAttribute('onclick');
-        }
-
-        el.addEventListener('click', function (ev) {
-            ev.preventDefault();
-            const label = (el.innerText || el.textContent || el.getAttribute('aria-label') || 'Page').trim();
-            const lang = loadLang() || 'en-US';
-
-            let speakText = label === 'Logout' ? label : label + ' page';
-
-            if (lang !== "en-US" && translations[label]) {
-                speakText = translations[label][lang] || label;
-            }
-
-            let actionDone = false;
-            const executeAction = () => {
-                if (actionDone) return;
-                actionDone = true;
-                const href = el.getAttribute && el.getAttribute('href');
-                const hasHref = href && href !== '#' && !href.startsWith('javascript:');
-                if (hasHref) {
-                    setTimeout(() => { window.location.href = href; }, 120);
-                } else {
-                    const clickAction = el.getAttribute('data-onclick');
-                    if (clickAction) {
-                        try { new Function(clickAction).call(el); } catch (e) { console.error(e); }
-                    }
+            const translations = {
+                "Dashboard": {
+                    "hi-IN": "डैशबोर्ड",
+                    "mr-IN": "डॅशबोर्ड",
+                    "kn-IN": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್"
+                },
+                "My Tank": {
+                    "hi-IN": "मेरा टैंक",
+                    "mr-IN": "माझा टँक",
+                    "kn-IN": "ನನ್ನ ಟ್ಯಾಂಕ್"
+                },
+                "Encyclopedia": {
+                    "hi-IN": "विश्वकोश",
+                    "mr-IN": "विश्वकोश",
+                    "kn-IN": "ವಿಶ್ವಕೋಶ"
+                },
+                "Settings": {
+                    "hi-IN": "सेटिंग्स",
+                    "mr-IN": "सेटिंग्ज",
+                    "kn-IN": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
+                },
+                "Logout": {
+                    "hi-IN": "लॉग आउट",
+                    "mr-IN": "लॉग आउट",
+                    "kn-IN": "ಲಾಗ್ ಔಟ್"
                 }
             };
 
-            if (!loadEnabled()) {
-                executeAction();
-                return;
+            function refreshVoices() {
+                availableVoices = window.speechSynthesis.getVoices() || [];
+            }
+            refreshVoices();
+            window.speechSynthesis.onvoiceschanged = refreshVoices;
+
+            function findVoiceForLang(lang) {
+                if (!availableVoices.length) refreshVoices();
+                return availableVoices.find(v => v.lang && v.lang.toLowerCase().startsWith(lang.toLowerCase()))
+                    || availableVoices.find(v => v.lang && v.lang.split('-')[0].toLowerCase() === lang.split('-')[0].toLowerCase());
             }
 
-            speak(speakText, executeAction);
-            setTimeout(executeAction, 2000); // safety fallback
-        }, { passive: false });
-    });
-})();
+            function speak(text, onend) {
+                try {
+                    window.speechSynthesis.cancel();
+                    const lang = loadLang() || 'en-US';
+                    const u = new SpeechSynthesisUtterance(text);
+
+                    if (lang === "hi-IN" || lang === "mr-IN" || lang === "kn-IN") {
+                        const hindiVoice = availableVoices.find(v => v.name === "Lekha" || v.lang === "hi-IN");
+                        if (hindiVoice) {
+                            u.voice = hindiVoice;
+                            u.lang = "hi-IN";
+                        } else {
+                            u.lang = "hi-IN";
+                        }
+                    } else {
+                        const voice = findVoiceForLang(lang);
+                        if (voice) {
+                            u.voice = voice;
+                            u.lang = voice.lang || lang;
+                        } else {
+                            u.lang = lang;
+                        }
+                    }
+
+                    u.volume = 1;
+                    u.rate = 0.95;
+                    u.pitch = 1;
+                    u.onend = () => { if (typeof onend === 'function') onend(); };
+                    window.speechSynthesis.speak(u);
+                } catch (err) {
+                    console.warn('Speech synth error:', err);
+                    if (typeof onend === 'function') onend();
+                }
+            }
+
+            // attach handler: when enabled, speak then navigate
+            document.querySelectorAll('.menu a, .menu [role="button"]').forEach(el => {
+                const inlineClick = el.getAttribute('onclick');
+                if (inlineClick) {
+                    el.setAttribute('data-onclick', inlineClick);
+                    el.removeAttribute('onclick');
+                }
+
+                el.addEventListener('click', function (ev) {
+                    ev.preventDefault();
+                    const label = (el.innerText || el.textContent || el.getAttribute('aria-label') || 'Page').trim();
+                    const lang = loadLang() || 'en-US';
+
+                    let speakText = label === 'Logout' ? label : label + ' page';
+
+                    if (lang !== "en-US" && translations[label]) {
+                        speakText = translations[label][lang] || label;
+                    }
+
+                    let actionDone = false;
+                    const executeAction = () => {
+                        if (actionDone) return;
+                        actionDone = true;
+                        const href = el.getAttribute && el.getAttribute('href');
+                        const hasHref = href && href !== '#' && !href.startsWith('javascript:');
+                        if (hasHref) {
+                            setTimeout(() => { window.location.href = href; }, 120);
+                        } else {
+                            const clickAction = el.getAttribute('data-onclick');
+                            if (clickAction) {
+                                try { new Function(clickAction).call(el); } catch (e) { console.error(e); }
+                            }
+                        }
+                    };
+
+                    if (!loadEnabled()) {
+                        executeAction();
+                        return;
+                    }
+
+                    speak(speakText, executeAction);
+                    setTimeout(executeAction, 2000); // safety fallback
+                }, { passive: false });
+            });
+        })();
     </script>
 </body>
 
