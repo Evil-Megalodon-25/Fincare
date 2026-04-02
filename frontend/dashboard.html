@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fincare | Dashboard</title>
+
+    <style>
+        /* ================= THEME ================= */
+
+        :root {
+            --primary: #00f2ff;
+            --secondary: #0077b6;
+            --dark: #050a14;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 6%;
+
+            background: linear-gradient(180deg,
+                    rgba(28, 53, 86, 0.45),
+                    rgba(11, 25, 51, 0.45));
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        body {
+            margin: 0;
+            font-family: Segoe UI;
+            background: radial-gradient(circle, #0a1f3d, #000);
+            color: white;
+            overflow-x: hidden;
+            padding-top: 70px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .menu a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* BUBBLES */
+
+        .bubbles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            width: 15px;
+            height: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: rise 12s linear infinite;
+        }
+
+        @keyframes rise {
+            100% {
+                transform: translateY(-110vh);
+                opacity: 0;
+            }
+        }
+
+        .fish-slider {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .slider {
+            width: 420px;
+            text-align: center;
+        }
+
+        .slider img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .fish-fact {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            color: white;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 290px);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .summary-section {
+            width: 1200px;
+            margin: 100px auto 80px auto;
+        }
+
+        .card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 18px;
+            border-radius: 16px;
+            width: 200px;
+            height: 60px;
+
+            background: linear-gradient(180deg,
+                    rgba(28, 53, 86, 0.45),
+                    rgba(11, 25, 51, 0.45));
+
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+
+            color: white;
+        }
+
+        .card span {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .tanks {
+            margin-top: 60px;
+            margin-bottom: 80px;
+            text-align: center;
+        }
+
+        .tank-grid {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .tank-card {
+            background: linear-gradient(180deg,
+                    rgba(28, 53, 86, 0.45),
+                    rgba(11, 25, 51, 0.45));
+
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+
+            padding: 22px;
+            width: 950px;
+            height: 630px;
+            border-radius: 14px;
+            cursor: pointer;
+
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+
+            transition: 0.3s;
+        }
+
+        .tank-card h3 {
+            font-size: 28px;
+            margin-top: 10px;
+        }
+
+        .tank-card p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .tank-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+        }
+
+        .reminder {
+            margin-top: 60px;
+            margin-bottom: 80px;
+            text-align: center;
+        }
+
+        .reminder-card {
+            background: linear-gradient(180deg,
+                    rgba(28, 53, 86, 0.45),
+                    rgba(11, 25, 51, 0.45));
+
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+
+            padding: 30px;
+            width: 80%;
+            max-width: 900px;
+            margin: 20px auto;
+            border-radius: 16px;
+
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .reminder-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: 0.3s ease;
+        }
+
+        .reminder-card button {
+            margin-top: 10px;
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #00f2ff;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .fish-slider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .fish-main {
+            width: 420px;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 20px;
+            z-index: 2;
+        }
+
+        .fish-side {
+            width: 250px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 20px;
+            filter: blur(4px);
+            opacity: 0.6;
+            transform: scale(0.9);
+        }
+
+        .fish-main {
+            transition: all 0.4s ease;
+        }
+
+        .fish-side {
+            transition: all 0.4s ease;
+        }
+
+
+        .slider img {
+            width: 420px;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 20px;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        .navbar {
+            box-sizing: border-box;
+        }
+
+        .fish-slider button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 24px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+        }
+
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 60px;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 900px;
+            height: 340px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            /* hides far slides */
+        }
+
+        .slide {
+            position: absolute;
+            width: 300px;
+            height: 210px;
+            object-fit: cover;
+            border-radius: 20px;
+            transition: all .6s ease;
+            opacity: 0;
+            filter: blur(6px);
+            transform: scale(.8);
+        }
+
+        .slide.active {
+            width: 520px;
+            height: 320px;
+            opacity: 1;
+            filter: none;
+            transform: translateX(0) scale(1);
+            z-index: 5;
+        }
+
+        .slide.left {
+            opacity: .7;
+            filter: blur(4px);
+            transform: translateX(-320px) scale(.85);
+            z-index: 3;
+        }
+
+        .slide.right {
+            opacity: .7;
+            filter: blur(4px);
+            transform: translateX(320px) scale(.85);
+            z-index: 3;
+        }
+
+        .fish-fact {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+            opacity: .9;
+        }
+
+        .tank-box {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 15px;
+            margin-bottom: 12px;
+        }
+
+        /* ensure layering: tank image behind, bubbles above it, fish on top */
+        .tank-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .tank-bubbles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .tank-bubble {
+            position: absolute;
+            bottom: -60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.18);
+            /* bright white bubbles */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(255, 255, 255, 0.05) inset;
+            backdrop-filter: blur(6px) saturate(120%);
+            -webkit-backdrop-filter: blur(6px) saturate(120%);
+            mix-blend-mode: screen;
+            will-change: transform, opacity;
+            animation-name: riseTank;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes riseTank {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+
+            80% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateY(-130%) scale(0.95);
+                opacity: 0;
+            }
+        }
+
+        /* keep fish above bubbles */
+        .fish {
+            z-index: 3;
+            position: absolute;
+        }
+
+        .tank-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .fish {
+            position: absolute;
+            width: 120px;
+        }
+
+        .fish1 {
+            top: 60px;
+            animation: swim1 10s linear infinite;
+        }
+
+        .fish2 {
+            top: 200px;
+            animation: swim2 12s linear infinite;
+        }
+
+        .fish3 {
+            top: 350px;
+            animation: swim3 11s linear infinite;
+        }
+
+        @keyframes swim1 {
+            0% {
+                left: 0;
+                transform: scaleX(1)
+            }
+
+            50% {
+                left: 80%;
+                transform: scaleX(1)
+            }
+
+            51% {
+                transform: scaleX(-1)
+            }
+
+            100% {
+                left: 0;
+                transform: scaleX(-1)
+            }
+        }
+
+        @keyframes swim2 {
+            0% {
+                left: 80%;
+                transform: scaleX(-1)
+            }
+
+            50% {
+                left: 0;
+                transform: scaleX(-1)
+            }
+
+            51% {
+                transform: scaleX(1)
+            }
+
+            100% {
+                left: 80%;
+                transform: scaleX(1)
+            }
+        }
+
+        @keyframes swim3 {
+            0% {
+                left: 0;
+                transform: scaleX(1)
+            }
+
+            50% {
+                left: 80%;
+                transform: scaleX(1)
+            }
+
+            51% {
+                transform: scaleX(-1)
+            }
+
+            100% {
+                left: 0;
+                transform: scaleX(-1)
+            }
+        }
+
+        .summary-title {
+            text-align: center;
+            font-size: 32px;
+            margin-top: 40px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .zoom-scroll {
+            transition: transform 0.25s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .reminder-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 16px;
+        }
+
+        .reminder-item:last-child {
+            border-bottom: none;
+        }
+
+        .reminder-item span {
+            opacity: 0.8;
+        }
+
+        /* ================= AI CHATBOT ================= */
+
+        .ai-chatbot {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 9999;
+        }
+
+        /* Floating Button */
+
+        .ai-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            cursor: pointer;
+        }
+
+        .ai-button img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            animation: floatAI 3s ease-in-out infinite;
+        }
+
+        @keyframes floatAI {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .ai-button img:hover {
+            transform: scale(1.1);
+            transition: 0.3s;
+        }
+
+        /* Chat Window */
+
+        .ai-chat-window {
+
+            width: 320px;
+            height: 420px;
+
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+
+            display: none;
+            flex-direction: column;
+
+            border-radius: 18px;
+
+            background: rgba(10, 25, 45, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            border: 1px solid rgba(255, 255, 255, 0.18);
+
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.55);
+        }
+
+        /* Header */
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 10px 14px;
+
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .ai-header img {
+            width: 28px;
+        }
+
+        .ai-header span {
+            flex: 1;
+            margin-left: 8px;
+        }
+
+        .ai-header button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Messages */
+
+        .ai-messages {
+
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        /* Message bubbles */
+
+        .user-msg {
+            background: var(--primary);
+            color: black;
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin: 6px 0;
+            align-self: flex-end;
+            width: fit-content;
+        }
+
+        .bot-msg {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin: 6px 0;
+            width: fit-content;
+        }
+
+        /* Input */
+
+        .ai-input {
+            display: flex;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .ai-input input {
+
+            flex: 1;
+            padding: 10px;
+
+            background: none;
+            border: none;
+            color: white;
+        }
+
+        .ai-input input:focus {
+            outline: none;
+        }
+
+        .ai-input button {
+
+            width: 45px;
+            border: none;
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            font-weight: 600;
+        }
+
+        .ai-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 6px rgba(77, 208, 225, 0.8));
+        }
+
+        #userInput:focus {
+            outline: none;
+            box-shadow: 0 0 6px rgba(0, 200, 255, 0.6);
+        }
+
+        .ai-popup {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            background: #0a1a2a;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            max-width: 220px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            display: none;
+        }
+
+        .ai-popup::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            right: 20px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: #0a1a2a transparent transparent transparent;
+        }
+
+        .typing-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin: 6px 0;
+            width: fit-content;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            animation: typing 1.2s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateY(-4px);
+            }
+
+            100% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+        }
+
+        .typing-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin: 6px 0;
+            width: fit-content;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            animation: typing 1.2s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateY(-4px);
+            }
+
+            100% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="slideshow zoom-scroll">
+
+        <div class="slider-wrapper">
+
+            <button class="slide-btn" onclick="prevFish()">❮</button>
+
+            <div class="slider-container">
+                <img src="fish11.jpeg" class="slide">
+                <img src="fish2.jpg" class="slide">
+                <img src="fish3.jpg" class="slide">
+                <img src="fish4.jpg" class="slide">
+                <img src="fish18.jpeg" class="slide">
+                <img src="fish20.jpeg" class="slide">
+            </div>
+
+            <button class="slide-btn" onclick="nextFish()">❯</button>
+
+        </div>
+
+        <div class="fish-fact" id="fishFact"></div>
+
+    </section>
+
+    <section class="summary-section zoom-scroll">
+
+        <h2 class="summary-title">Summary of Your Tanks</h2>
+
+        <div class="summary">
+
+            <div class="card">🐠 Tanks<br><span id="tankCount">0</span></div>
+
+            <div class="card">🐟 Fish<br><span id="fishCount">0</span></div>
+
+            <div class="card">🍽 Feeding<br><span id="feedAmount">0 g</span></div>
+
+            <div class="card">🌡 Avg Temp<br><span id="avgTemp">25°C</span></div>
+        </div>
+
+    </section>
+
+    <section class="tanks zoom-scroll">
+
+        <h2>Your Active Tanks</h2>
+
+        <div id="tankList" class="tank-grid"></div>
+
+    </section>
+
+    <section class="reminder zoom-scroll">
+
+        <h2>Reminders</h2>
+
+        <div class="reminder-card">
+
+            <div class="reminder-item">
+                🐟 Feed the Fish
+                <span>7:00 PM</span>
+            </div>
+
+            <div class="reminder-item">
+                🧹 Clean the Tank
+                <span>Tomorrow</span>
+            </div>
+
+            <div class="reminder-item">
+                💧 Check Water Quality
+                <span>Sunday</span>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Bubbles -->
+
+    <div class="bubbles">
+        <div class="bubble" style="left:10%"></div>
+        <div class="bubble" style="left:30%"></div>
+        <div class="bubble" style="left:55%"></div>
+        <div class="bubble" style="left:80%"></div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <!-- left: logo + voice controls -->
+        <div style="display:flex; align-items:center; gap:18px;">
+            <div class="logo">
+                <img src="fincare.png" class="logo-img">
+                <span>Fincare</span>
+            </div>
+
+            <!-- Voice controls: toggle + language select -->
+            <div class="voice-controls" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
+                <label style="display:flex;align-items:center;gap:8px;color:white;font-size:14px;cursor:pointer;">
+                    <input id="voiceToggle" type="checkbox" aria-label="Enable voice over" />
+                    <span style="opacity:0.95">Voice</span>
+                </label>
+                <select id="voiceLang" aria-label="Voice language" style="background:rgba(255,255,255,0.06);color:white;border-radius:8px;padding:6px;font-size:13px;border:1px solid rgba(255,255,255,0.08);">
+                    <option value="en-US">English</option>
+                    <option value="hi-IN">Hindi</option>
+                    <option value="mr-IN">Marathi</option>
+                    <option value="kn-IN">Kannada</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- right: menu -->
+        <div class="menu" style="margin-left:auto;">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="tank.html">My Tank</a>
+            <a href="info.html">Encyclopedia</a>
+            <a href="settings.html">Settings</a>
+            <a onclick="logout()" role="button">Logout</a>
+        </div>
+    </nav>
+
+    <script>
+/* Voice-over for navbar clicks with voice selection fallback to voices list */
+(function () {
+    if (!('speechSynthesis' in window)) return;
+
+    const STORE_ENABLED = 'voiceEnabled';
+    const STORE_LANG = 'voiceLang';
+    const toggleEl = document.getElementById('voiceToggle');
+    const langEl = document.getElementById('voiceLang');
+
+    function loadEnabled() { return localStorage.getItem(STORE_ENABLED) === '1'; }
+    function loadLang() { return localStorage.getItem(STORE_LANG) || 'en-US'; }
+    function saveEnabled(v) { localStorage.setItem(STORE_ENABLED, v ? '1' : '0'); }
+    function saveLang(v) { localStorage.setItem(STORE_LANG, v); }
+
+    if (toggleEl) toggleEl.checked = loadEnabled();
+    if (langEl) langEl.value = loadLang();
+    if (toggleEl) toggleEl.addEventListener('change', () => saveEnabled(toggleEl.checked));
+    if (langEl) langEl.addEventListener('change', () => saveLang(langEl.value));
+
+    // manage available voices
+    let availableVoices = [];
+
+    const translations = {
+    "Dashboard": {
+        "hi-IN": "डैशबोर्ड",
+        "mr-IN": "डॅशबोर्ड",
+        "kn-IN": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್"
+    },
+    "My Tank": {
+        "hi-IN": "मेरा टैंक",
+        "mr-IN": "माझा टँक",
+        "kn-IN": "ನನ್ನ ಟ್ಯಾಂಕ್"
+    },
+    "Encyclopedia": {
+        "hi-IN": "विश्वकोश",
+        "mr-IN": "विश्वकोश",
+        "kn-IN": "ವಿಶ್ವಕೋಶ"
+    },
+    "Settings": {
+        "hi-IN": "सेटिंग्स",
+        "mr-IN": "सेटिंग्ज",
+        "kn-IN": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
+    },
+    "Logout": {
+        "hi-IN": "लॉग आउट",
+        "mr-IN": "लॉग आउट",
+        "kn-IN": "ಲಾಗ್ ಔಟ್"
+    }
+};
+
+    function refreshVoices() {
+        availableVoices = window.speechSynthesis.getVoices() || [];
+
+        console.log(availableVoices);
+    }
+    refreshVoices();
+    window.speechSynthesis.onvoiceschanged = refreshVoices;
+
+    function findVoiceForLang(lang) {
+        if (!availableVoices.length) refreshVoices();
+        // match start of voice.lang (e.g. "hi-IN" or "hi")
+        return availableVoices.find(v => v.lang && v.lang.toLowerCase().startsWith(lang.toLowerCase()))
+            || availableVoices.find(v => v.lang && v.lang.split('-')[0].toLowerCase() === lang.split('-')[0].toLowerCase());
+    }
+
+    function speak(text, onend) {
+        try {
+            window.speechSynthesis.cancel();
+            const lang = loadLang() || 'en-US';
+            const u = new SpeechSynthesisUtterance(text);
+
+            // 🔥 FORCE Hindi voice for Indian languages
+            if (lang === "hi-IN" || lang === "mr-IN" || lang === "kn-IN") {
+                const hindiVoice = availableVoices.find(v => v.name === "Lekha" || v.lang === "hi-IN");
+                if (hindiVoice) {
+                    u.voice = hindiVoice;
+                    u.lang = "hi-IN";
+                } else {
+                    u.lang = "hi-IN";
+                }
+            } else {
+                const voice = findVoiceForLang(lang);
+                if (voice) {
+                    u.voice = voice;
+                    u.lang = voice.lang || lang;
+                } else {
+                    u.lang = lang;
+                }
+            }
+            u.volume = 1;
+            u.rate = 0.95;
+            u.pitch = 1;
+            u.onend = () => { if (typeof onend === 'function') onend(); };
+            window.speechSynthesis.speak(u);
+        } catch (err) {
+            console.warn('Speech synth error:', err);
+            if (typeof onend === 'function') onend();
+        }
+    }
+
+    // attach handler: when enabled, speak then navigate
+    document.querySelectorAll('.menu a, .menu [role="button"]').forEach(el => {
+        const inlineClick = el.getAttribute('onclick');
+        if (inlineClick) {
+            el.setAttribute('data-onclick', inlineClick);
+            el.removeAttribute('onclick');
+        }
+
+        el.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            const label = (el.innerText || el.textContent || el.getAttribute('aria-label') || 'Page').trim();
+            const lang = loadLang() || 'en-US';
+
+            let speakText = label === 'Logout' ? label : label + ' page';
+
+            if (lang !== "en-US" && translations[label]) {
+                speakText = translations[label][lang] || label;
+            }
+
+            let actionDone = false;
+            const executeAction = () => {
+                if (actionDone) return;
+                actionDone = true;
+                const href = el.getAttribute && el.getAttribute('href');
+                const hasHref = href && href !== '#' && !href.startsWith('javascript:');
+                if (hasHref) {
+                    setTimeout(() => { window.location.href = href; }, 120);
+                } else {
+                    const clickAction = el.getAttribute('data-onclick');
+                    if (clickAction) {
+                        try { new Function(clickAction).call(el); } catch (e) { console.error(e); }
+                    }
+                }
+            };
+
+            if (!loadEnabled()) {
+                executeAction();
+                return;
+            }
+
+            speak(speakText, executeAction);
+            setTimeout(executeAction, 2000); // safety fallback
+        }, { passive: false });
+    });
+})();
+    </script>
+
+    <script>
+
+        const theme = localStorage.getItem("theme");
+
+        if (theme === "light") {
+            document.body.style.background = "#f2f2f2";
+            document.body.style.color = "black";
+        }
+
+        const zoomSections = document.querySelectorAll(".zoom-scroll");
+
+        window.addEventListener("scroll", () => {
+            zoomSections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                let center = rect.top + rect.height / 2;
+                let distance = Math.abs(windowHeight / 2 - center);
+                let scale = 1 + (1 - distance / windowHeight) * 0.18;
+                scale = Math.max(0.9, Math.min(1.18, scale));
+                section.style.transform = `scale(${scale})`;
+            });
+        });
+
+        /* LOGIN PROTECTION */
+
+        if (localStorage.getItem("fincareUser") !== "logged") {
+            window.location.href = "index.html";
+        }
+
+        /* LOGOUT */
+
+        function logout() {
+            localStorage.removeItem("fincareUser");
+            window.location.href = "index.html";
+        }
+
+        const slides = document.querySelectorAll(".slide")
+        const factBox = document.getElementById("fishFact")
+
+        const fishFacts = [
+            "Clownfish can live inside sea anemones because a special mucus on their skin protects them from the stings.",
+            "Betta fish breathe air from the surface.",
+            "Guppies are beginner friendly aquarium fish.",
+            "Neon Tetras glow because of reflective cells.",
+            "Arowanas are powerful jumpers and can leap up to 2 meters above water to catch insects or small animals.",
+            "Lionfish have beautiful striped fins, but their spines contain venom used for defense against predators."
+        ]
+
+        let index = 0
+        const total = slides.length
+
+        function updateSlider() {
+
+            slides.forEach(slide => {
+                slide.className = "slide"
+            })
+
+            slides[index].classList.add("active")
+
+            slides[(index - 1 + total) % total].classList.add("left")
+
+            slides[(index + 1) % total].classList.add("right")
+
+            slides[(index - 2 + total) % total].classList.add("far-left")
+
+            slides[(index + 2) % total].classList.add("far-right")
+
+            factBox.innerText = fishFacts[index]
+
+        }
+
+        function nextFish() {
+
+            index = (index + 1) % total
+            updateSlider()
+
+        }
+
+        function prevFish() {
+
+            index = (index - 1 + total) % total
+            updateSlider()
+
+        }
+
+        updateSlider()
+
+        setInterval(nextFish, 4500)
+
+        const tanks = JSON.parse(localStorage.getItem("tanks")) || []
+
+        function updateSummaryCards() {
+            let numTanks = tanks.length;
+            let totalFish = 0;
+            let totalFeed = 0;
+            let totalMinTemp = 0;
+            let totalMaxTemp = 0;
+            let fishCountForTemp = 0;
+
+            tanks.forEach(tank => {
+                let fishes = tank.fish || [];
+                fishes.forEach(f => {
+                    let count = f.count || 1;
+                    totalFish += count;
+                    totalFeed += (f.feed || 0) * count;
+                    // Gather temp ranges for simple average approximation
+                    if (f.tempMin && f.tempMax) {
+                        totalMinTemp += f.tempMin;
+                        totalMaxTemp += f.tempMax;
+                        fishCountForTemp++;
+                    }
+                });
+            });
+
+            let tankCountEl = document.getElementById('tankCount');
+            let fishCountEl = document.getElementById('fishCount');
+            let feedAmountEl = document.getElementById('feedAmount');
+            let avgTempEl = document.getElementById('avgTemp');
+
+            if(tankCountEl) tankCountEl.innerText = numTanks;
+            if(fishCountEl) fishCountEl.innerText = totalFish;
+            if(feedAmountEl) feedAmountEl.innerText = totalFeed + " g";
+
+            if (avgTempEl) {
+                if (fishCountForTemp > 0) {
+                    let avgMin = Math.round(totalMinTemp / fishCountForTemp);
+                    let avgMax = Math.round(totalMaxTemp / fishCountForTemp);
+                    avgTempEl.innerText = `${avgMin}-${avgMax}°C`;
+                } else {
+                    avgTempEl.innerText = "25°C"; // default fallback
+                }
+            }
+        }
+        updateSummaryCards();
+
+        function loadTanks() {
+            const container = document.getElementById("tankList");
+            container.innerHTML = "";
+
+            if (tanks.length === 0) return;
+
+            // Only show the first tank
+            const tank = tanks[0];
+
+            container.innerHTML = `
+        <div class="tank-card" onclick="openTank(0)">
+            <div class="tank-box">
+                <img src="tank.jpg" class="tank-image">
+                <img src="fish8.png" class="fish fish1">
+                <img src="fish9.png" class="fish fish2">
+                <img src="fish10.png" class="fish fish3">
+            </div>
+            <div>
+                <h3>${tank.name}</h3>
+                <p>${tank.water} Tank</p>
+                <p>Fish Count: ${tank.fish.length}</p>
+            </div>
+        </div>
+    `;
+        }
+
+        function openTank(index) {
+
+            window.location.href = "tank.html"
+
+        }
+
+        loadTanks()
+
+        /* Create animated bubbles inside each .tank-box (matches tank.html style) */
+        function createTankBubbles() {
+            document.querySelectorAll('.tank-box').forEach(box => {
+                // don't recreate if already present
+                if (box.querySelector('.tank-bubbles')) return;
+
+                const container = document.createElement('div');
+                container.className = 'tank-bubbles';
+                box.appendChild(container);
+
+                const count = 18;
+                for (let i = 0; i < count; i++) {
+                    const b = document.createElement('div');
+                    b.className = 'tank-bubble';
+
+                    const size = Math.floor(Math.random() * 36) + 8; // 8 - 44px
+                    b.style.width = size + 'px';
+                    b.style.height = size + 'px';
+
+                    b.style.left = Math.random() * 100 + '%';
+                    b.style.animationDuration = (Math.random() * 8 + 6).toFixed(2) + 's'; // 6-14s
+                    b.style.animationDelay = (Math.random() * -8).toFixed(2) + 's';
+
+                    // slight horizontal drift
+                    b.style.setProperty('--sway', (Math.random() * 60 - 30).toFixed(2) + 'px');
+
+                    // opacity variation
+                    b.style.opacity = (Math.random() * 0.35 + 0.35).toFixed(2);
+
+                    container.appendChild(b);
+                }
+            });
+        }
+
+        // create bubbles now and whenever tanks are (re)loaded
+        createTankBubbles();
+        // if tanks are added dynamically elsewhere, call createTankBubbles() again
+
+        function revealOnScroll() {
+
+            const reveals = document.querySelectorAll(".reveal")
+
+            reveals.forEach(section => {
+
+                const windowHeight = window.innerHeight
+                const elementTop = section.getBoundingClientRect().top
+                const revealPoint = 120
+
+                if (elementTop < windowHeight - revealPoint) {
+                    section.classList.add("active")
+                } else {
+                    section.classList.remove("active")
+                }
+
+            })
+
+        }
+
+        window.addEventListener("scroll", revealOnScroll)
+        revealOnScroll()
+
+        let chatInitialized = false;
+
+        function toggleChat() {
+
+            let chat = document.getElementById("chatWindow");
+            let messages = document.getElementById("chatMessages");
+
+            if (chat.style.display === "flex") {
+                chat.style.display = "none";
+            } else {
+                chat.style.display = "flex";
+
+                if (!chatInitialized) {
+
+                    // 👇 typing animation first
+                    messages.innerHTML += `
+                <div class="typing-box" id="welcomeTyping">
+                    Jeff is typing...
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
+
+                    // 👇 after delay show real message
+                    setTimeout(() => {
+
+                        document.getElementById("welcomeTyping").remove();
+
+                        messages.innerHTML += `
+                    <div class="bot-msg">
+                        Hi, I'm Jeff 👋<br>
+                        Your aquarium AI assistant.<br>
+                        Ask me anything about your fish 🐠
+                    </div>
+                `;
+
+                        messages.scrollTop = messages.scrollHeight;
+
+                    }, 1500);
+
+                    chatInitialized = true;
+                }
+            }
+        }
+
+        async function sendMessage() {
+
+            let input = document.getElementById("userInput")
+            let text = input.value.trim()
+
+            if (!text) return
+
+            const messages = document.getElementById("chatMessages")
+
+            messages.innerHTML += `<div class="user-msg">${text}</div>`
+
+            input.value = ""
+
+            // get tank data
+            const tankData = JSON.parse(localStorage.getItem("tanks")) || []
+
+            // show loading
+            messages.innerHTML += `
+<div class="typing-box" id="loading">
+Jeff is typing...
+<div class="typing-dots">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</div>
+`
+
+            const response = await fetch("http://127.0.0.1:8000/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: text,
+                    tank: tankData
+                })
+            })
+
+            // remove loading message
+            document.getElementById("loading").remove()
+
+            const data = await response.json()
+
+            console.log(data)
+
+            messages.innerHTML += `<div class="bot-msg">${data.reply}</div>`
+
+            messages.scrollTop = messages.scrollHeight
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const inputField = document.getElementById("userInput");
+
+            if (inputField) {
+                inputField.focus();
+            }
+
+            inputField.addEventListener("keydown", function (event) {
+
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    sendMessage();
+                }
+
+            });
+
+        });
+
+        window.addEventListener("load", function () {
+
+            setTimeout(function () {
+
+                const popup = document.getElementById("aiPopup");
+
+                if (popup) {
+
+                    popup.style.display = "block";
+
+                    setTimeout(() => {
+                        popup.style.display = "none";
+                    }, 5000);
+
+                }
+
+            }, 10000);
+
+        });
+
+        function closePopup() {
+            const popup = document.getElementById("aiPopup")
+            if (popup) {
+                popup.style.display = "none"
+            }
+        }
+
+    </script>
+
+    <!-- AI CHATBOT -->
+
+    <div class="ai-chatbot">
+
+        <!-- Floating Button -->
+        <div class="ai-button" onclick="toggleChat(); closePopup();">
+            <img src="ai-bot.png" alt="AI">
+        </div>
+
+        <div class="ai-popup" id="aiPopup">
+            Hi, I'm Jeff 👋 your aquarium AI assistant. Ask me anything!
+        </div>
+
+        <!-- Chat Window -->
+        <div class="ai-chat-window" id="chatWindow">
+
+            <div class="ai-header">
+
+                <div class="ai-title">
+                    <img src="ai-bot.png" class="ai-logo">
+                    <span>Jeff</span>
+                </div>
+
+                <button onclick="toggleChat()">✕</button>
+
+            </div>
+
+            <div class="ai-messages" id="chatMessages"></div>
+
+            <div class="ai-input">
+                <input type="text" id="userInput" placeholder="Ask about your aquarium...">
+                <button onclick="sendMessage()">➤</button>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
