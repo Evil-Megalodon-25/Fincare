@@ -70,3 +70,7 @@ class Settings(BaseModel):
 @app.post("/save-settings")
 def save_settings(data: Settings):
     return {"status": "saved", "data": data}
+
+@app.get("/")
+def home():
+    return {"message": "Backend is live 🚀"}
