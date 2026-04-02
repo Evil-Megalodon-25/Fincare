@@ -73,4 +73,4 @@ def save_settings(data: Settings):
 
 @app.get("/")
 def home():
-    return {"message": "Backend is live 🚀"}
+    return {"message": "Backend is live v2 🚀"}
