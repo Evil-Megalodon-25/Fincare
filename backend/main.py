@@ -13,7 +13,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-API_KEY = "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"
+import os
+
+API_KEY = os.getenv("API_KEY")
+
 
 class Chat(BaseModel):
     message: str
