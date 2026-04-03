@@ -1,50 +1,58 @@
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import requests
+import os
 
 app = FastAPI()
 
+# ---------------- CORS ----------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # allow all origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-import os
-
+# ---------------- ENV ----------------
 API_KEY = os.getenv("API_KEY")
 
+if not API_KEY:
+    print("❌ WARNING: API_KEY is not set in environment variables")
 
+# ---------------- MODELS ----------------
 class Chat(BaseModel):
     message: str
     tank: list | None = None
 
 
+class Settings(BaseModel):
+    language: str
+    notify: bool
+
+
+# ---------------- CHAT ROUTE ----------------
 @app.post("/chat")
 async def chat(data: Chat):
 
     try:
-
-        # create messages list
         messages = []
 
-        # add tank info if available
+        # add tank context
         if data.tank:
             messages.append({
                 "role": "system",
-                "content": f"The user's aquarium data is: {data.tank}. Give advice based on this."
+                "content": f"The user's aquarium data is: {data.tank}. Give advice based on it."
             })
 
-        # add user message
+        # user message
         messages.append({
             "role": "user",
             "content": data.message
         })
 
-        # send request to OpenRouter
+        # call OpenRouter
         response = requests.post(
             "https://openrouter.ai/api/v1/chat/completions",
             headers={
@@ -54,31 +62,58 @@ async def chat(data: Chat):
             json={
                 "model": "openai/gpt-4o-mini",
                 "messages": messages
-            }
+            },
+            timeout=30
         )
 
-        result = response.json()
+        # try parsing JSON safely
+        try:
+            result = response.json()
+        except Exception:
+            return {
+                "error": "Invalid JSON response from OpenRouter",
+                "raw": response.text
+            }
 
+        print("STATUS:", response.status_code)
+        print("RESULT:", result)
+
+        # handle HTTP errors
+        if response.status_code != 200:
+            return {
+                "error": result,
+                "status_code": response.status_code
+            }
+
+        # handle success
         if "choices" in result:
             return {
                 "reply": result["choices"][0]["message"]["content"]
             }
-        else:
-            return {
-                "error": result
-            }
+
+        return {
+            "error": "Unexpected response format",
+            "raw": result
+        }
 
     except Exception as e:
-        return {"error": str(e)}
+        return {
+            "error": str(e)
+        }
 
-class Settings(BaseModel):
-    language: str
-    notify: bool
 
+# ---------------- SETTINGS ROUTE ----------------
 @app.post("/save-settings")
 def save_settings(data: Settings):
-    return {"status": "saved", "data": data}
+    return {
+        "status": "saved",
+        "data": data
+    }
 
+
+# ---------------- HOME ROUTE ----------------
 @app.get("/")
 def home():
-    return {"message": "Backend is live v2 🚀"}
+    return {
+        "message": "Backend is live v2 🚀"
+    }
